@@ -12,6 +12,16 @@ const nextConfig = {
   images: {
     domains: [],
   },
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: '/',
+          destination: '/app.html',
+        },
+      ],
+    };
+  },
 
 };
 

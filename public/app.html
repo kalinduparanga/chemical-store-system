@@ -11,7 +11,7 @@
   <!-- Google Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   
   <script>
     tailwind.config = {
@@ -31,6 +31,13 @@
               700: '#0369a1',
               800: '#075985',
               900: '#0c4a6e',
+            },
+            chem: {
+              amber: '#d97706',
+              emerald: '#059669',
+              rose: '#e11d48',
+              cyan: '#0891b2',
+              purple: '#7c3aed',
             }
           }
         }
@@ -38,161 +45,171 @@
     }
   </script>
   <style>
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #f1f5f9; }
-    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
     .glass-card {
       background: #ffffff;
       border: 1px solid #e2e8f0;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03);
     }
-    .badge-valid { background-color: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
-    .badge-expiring { background-color: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
-    .badge-expired { background-color: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+    .glass-card-hover:hover {
+      background: #ffffff;
+      border-color: #cbd5e1;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+    }
+    @media print {
+      .no-print { display: none !important; }
+      body { background: white !important; color: black !important; }
+      .print-area { display: block !important; }
+    }
   </style>
 </head>
 <body class="h-full font-sans antialiased text-slate-800 bg-slate-100 flex flex-col overflow-hidden">
 
   <div id="app" class="flex h-screen w-full overflow-hidden">
     
-    <!-- SIDEBAR NAVIGATION -->
+    <!-- SIDEBAR -->
     <aside id="sidebar" class="w-64 bg-white border-r border-slate-200 flex flex-col flex-shrink-0 transition-all duration-300 z-20 shadow-sm">
-      
       <!-- Logo Header -->
       <div class="h-16 flex items-center px-4 border-b border-slate-200 gap-3 bg-white">
-        <div class="p-2 bg-gradient-to-tr from-cyan-600 to-blue-700 rounded-lg shadow-md text-white">
+        <div class="p-2 bg-gradient-to-tr from-cyan-600 to-blue-600 rounded-lg shadow-md shadow-cyan-600/20 text-white">
           <i data-lucide="flask-conical" class="w-6 h-6"></i>
         </div>
         <div>
           <h1 class="font-bold text-sm text-slate-900 tracking-wide leading-tight">CHEMSTORE PRO</h1>
-          <p class="text-[10px] text-cyan-700 font-semibold tracking-widest uppercase">Inventory System</p>
+          <p class="text-[10px] text-cyan-700 font-semibold tracking-widest uppercase">Chemical Inventory</p>
         </div>
       </div>
 
-      <!-- Navigation Links -->
+      <!-- Navigation Menu -->
       <nav class="flex-1 overflow-y-auto p-3 space-y-1 text-sm font-medium">
-        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 my-1.5">Overview</div>
+        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 my-2">Main Menu</div>
         
-        <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+        <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
           <i data-lucide="layout-dashboard" class="w-4 h-4 text-cyan-600"></i>
           <span>Dashboard</span>
         </button>
 
-        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 pt-3 pb-1">Daily Operations</div>
-
-        <button onclick="switchTab('daily-entry')" id="nav-daily-entry" class="nav-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+        <button onclick="switchTab('daily-entry')" id="nav-daily-entry" class="nav-btn w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
           <div class="flex items-center gap-3">
-            <i data-lucide="clipboard-check" class="w-4 h-4 text-emerald-600"></i>
+            <i data-lucide="clipboard-list" class="w-4 h-4 text-emerald-600"></i>
             <span>Daily Morning Entry</span>
           </div>
           <span class="px-1.5 py-0.5 text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 rounded font-bold">AM</span>
         </button>
 
-        <button onclick="switchTab('usage')" id="nav-usage" class="nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+        <button onclick="switchTab('usage')" id="nav-usage" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
           <i data-lucide="minus-circle" class="w-4 h-4 text-rose-600"></i>
           <span>Chemical Usage</span>
         </button>
 
-        <button onclick="switchTab('receiving')" id="nav-receiving" class="nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+        <button onclick="switchTab('receiving')" id="nav-receiving" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
           <i data-lucide="arrow-down-left-square" class="w-4 h-4 text-blue-600"></i>
           <span>Receiving (GRN)</span>
         </button>
 
-        <button onclick="switchTab('transfers')" id="nav-transfers" class="nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 pt-4 pb-1">Ammonia Module</div>
+
+        <div class="space-y-0.5 pl-2 border-l-2 border-slate-200 ml-3 my-1">
+          <button onclick="switchTab('ammonia-barrels')" id="nav-ammonia-barrels" class="nav-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+            <span>25% Barrel Stock</span>
+            <span id="badge-barrel-count" class="text-[10px] px-1.5 py-0.2 bg-amber-50 text-amber-700 border border-amber-200 rounded font-semibold">6 Barrels</span>
+          </button>
+
+          <button onclick="switchTab('ammonia-ready')" id="nav-ammonia-ready" class="nav-btn w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+            <span>Ready-to-Use 25%</span>
+          </button>
+
+          <button onclick="switchTab('ammonia-10-stock')" id="nav-ammonia-10-stock" class="nav-btn w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+            <span>10% Ammonia Stock</span>
+          </button>
+
+          <button onclick="switchTab('ammonia-prep')" id="nav-ammonia-prep" class="nav-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs text-cyan-700 font-semibold hover:bg-cyan-50 transition-all border border-cyan-200 bg-cyan-50/50">
+            <span class="flex items-center gap-1.5"><i data-lucide="beaker" class="w-3.5 h-3.5"></i> 10% Preparation</span>
+            <span class="text-[9px] bg-cyan-600 text-white px-1.5 py-0.2 rounded font-bold">FIXED</span>
+          </button>
+        </div>
+
+        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 pt-4 pb-1">Store & Audit</div>
+
+        <button onclick="switchTab('transfers')" id="nav-transfers" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
           <i data-lucide="arrow-right-left" class="w-4 h-4 text-purple-600"></i>
           <span>Stock Transfers</span>
         </button>
 
-        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 pt-3 pb-1">Ammonia Module</div>
-
-        <div class="space-y-1 pl-2 border-l-2 border-slate-200 ml-3 my-1">
-          <button onclick="switchTab('ammonia-barrels')" id="nav-ammonia-barrels" class="nav-btn w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
-            <span>25% Barrel Stock</span>
-            <span id="badge-barrel-count" class="text-[10px] px-1.5 py-0.2 bg-amber-50 text-amber-800 border border-amber-200 rounded font-bold">-- Barrels</span>
-          </button>
-
-          <button onclick="switchTab('ammonia-ready')" id="nav-ammonia-ready" class="nav-btn w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
-            <span>Ready-to-Use 25%</span>
-          </button>
-
-          <button onclick="switchTab('ammonia-10-stock')" id="nav-ammonia-10-stock" class="nav-btn w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
-            <span>10% Ammonia Stock</span>
-          </button>
-
-          <button onclick="switchTab('ammonia-prep')" id="nav-ammonia-prep" class="nav-btn w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs text-cyan-800 font-bold hover:bg-cyan-50 transition-all border border-cyan-200 bg-cyan-50/50">
-            <span class="flex items-center gap-1.5"><i data-lucide="beaker" class="w-3.5 h-3.5"></i> 10% Preparation</span>
-            <span class="text-[9px] bg-cyan-700 text-white px-1.5 py-0.2 rounded font-bold">FIXED</span>
-          </button>
-        </div>
-
-        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 pt-3 pb-1">Ledger & Audit</div>
-
-        <button onclick="switchTab('chemicals')" id="nav-chemicals" class="nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+        <button onclick="switchTab('chemicals')" id="nav-chemicals" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
           <i data-lucide="package" class="w-4 h-4 text-indigo-600"></i>
-          <span>Chemicals Master</span>
+          <span>Chemicals Inventory</span>
         </button>
 
-        <button onclick="switchTab('batches')" id="nav-batches" class="nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+        <button onclick="switchTab('batches')" id="nav-batches" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
           <i data-lucide="boxes" class="w-4 h-4 text-amber-600"></i>
           <span>Batch & Expiry</span>
         </button>
 
-        <button onclick="switchTab('reports')" id="nav-reports" class="nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+        <button onclick="switchTab('reports')" id="nav-reports" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
           <i data-lucide="file-spreadsheet" class="w-4 h-4 text-teal-600"></i>
           <span>Reports & Analytics</span>
         </button>
 
-        <button onclick="switchTab('history')" id="nav-history" class="nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+        <button onclick="switchTab('history')" id="nav-history" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
           <i data-lucide="history" class="w-4 h-4 text-slate-500"></i>
           <span>Historical Audit Log</span>
         </button>
 
-        <button onclick="switchTab('alerts')" id="nav-alerts" class="nav-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+        <button onclick="switchTab('alerts')" id="nav-alerts" class="nav-btn w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
           <div class="flex items-center gap-3">
             <i data-lucide="bell" class="w-4 h-4 text-rose-600"></i>
             <span>Alert Center</span>
           </div>
-          <span id="badge-alert-count" class="px-1.5 py-0.5 text-[10px] bg-rose-100 text-rose-700 border border-rose-200 rounded-full font-bold">0</span>
+          <span id="badge-alert-count" class="px-1.5 py-0.5 text-[10px] bg-rose-100 text-rose-700 border border-rose-200 rounded-full font-bold">3</span>
         </button>
 
-        <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+        <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
           <i data-lucide="settings" class="w-4 h-4 text-slate-500"></i>
           <span>Settings & Users</span>
         </button>
       </nav>
 
-      <!-- Sidebar Footer User Profile & Role Switcher -->
+      <!-- Sidebar Footer User Profile -->
       <div class="p-3 border-t border-slate-200 bg-slate-50 flex items-center justify-between">
         <div class="flex items-center gap-2.5">
-          <div id="user-avatar-badge" class="w-8 h-8 rounded-full bg-cyan-100 border border-cyan-300 flex items-center justify-center font-bold text-xs text-cyan-800">
+          <div class="w-8 h-8 rounded-full bg-cyan-100 border border-cyan-300 flex items-center justify-center font-bold text-xs text-cyan-800">
             SK
           </div>
           <div>
-            <p id="current-user-name" class="text-xs font-bold text-slate-800 leading-none">Samitha K.</p>
-            <p id="current-user-role" class="text-[10px] text-slate-500 font-medium">Storekeeper</p>
+            <p class="text-xs font-bold text-slate-800 leading-none">Samitha K.</p>
+            <p class="text-[10px] text-slate-500 font-medium">Chief Storekeeper</p>
           </div>
         </div>
-        <div class="flex items-center gap-1.5">
-          <button onclick="openModal('modal-role-switch')" class="p-1.5 text-slate-500 hover:text-cyan-700 hover:bg-slate-200 rounded" title="Switch User / Role">
-            <i data-lucide="user-check" class="w-4 h-4"></i>
-          </button>
-        </div>
+        <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-emerald-100 animate-pulse" title="System Online"></span>
       </div>
     </aside>
 
-    <!-- MAIN APP CONTAINER -->
+    <!-- MAIN CONTENT AREA -->
     <div class="flex-1 flex flex-col overflow-hidden bg-slate-100">
       
-      <!-- Top Navigation Header -->
+      <!-- Top Header Navigation -->
       <header class="h-16 border-b border-slate-200 bg-white px-6 flex items-center justify-between flex-shrink-0 z-10 shadow-sm">
         <div class="flex items-center gap-4">
           <h2 id="current-page-title" class="text-lg font-bold text-slate-900 flex items-center gap-2">
             Dashboard
           </h2>
           <span class="text-xs px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-medium flex items-center gap-1.5">
-            <i data-lucide="database" class="w-3.5 h-3.5 text-cyan-600"></i>
-            <span>Persistent Relational SQLite (WAL)</span>
+            <i data-lucide="building" class="w-3.5 h-3.5 text-cyan-600"></i>
+            <span id="active-store-label">Main Chemical Store</span>
           </span>
         </div>
 
@@ -202,29 +219,23 @@
             <i data-lucide="minus" class="w-3.5 h-3.5 text-rose-600"></i> Log Usage
           </button>
           
-          <button onclick="openModal('modal-receiving')" class="px-3 py-1.5 text-xs font-semibold bg-white hover:bg-slate-50 text-slate-700 rounded-lg border border-slate-300 flex items-center gap-1.5 shadow-sm transition">
-            <i data-lucide="plus" class="w-3.5 h-3.5 text-blue-600"></i> Receive GRN
-          </button>
-
           <button onclick="openModal('modal-prep')" class="px-3 py-1.5 text-xs font-bold bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg shadow-sm flex items-center gap-1.5 transition">
-            <i data-lucide="beaker" class="w-3.5 h-3.5"></i> Prepare 10% Ammonia
+            <i data-lucide="flask-conical" class="w-3.5 h-3.5"></i> Prepare 10% Ammonia
           </button>
 
           <div class="h-5 w-px bg-slate-200"></div>
 
-          <!-- Direct Excel Export -->
-          <a id="btn-export-excel-header" href="/api/export/stock-balance/excel" class="p-2 text-slate-600 hover:text-emerald-600 hover:bg-slate-100 rounded-lg border border-transparent transition" title="Export Stock Excel">
+          <button onclick="triggerGlobalExport('Excel')" class="p-2 text-slate-600 hover:text-emerald-600 hover:bg-slate-100 rounded-lg border border-transparent transition" title="Export Excel">
             <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
-          </a>
+          </button>
 
-          <!-- Direct PDF Export -->
-          <a id="btn-export-pdf-header" href="/api/export/stock-balance/pdf" target="_blank" class="p-2 text-slate-600 hover:text-rose-600 hover:bg-slate-100 rounded-lg border border-transparent transition" title="Export Stock PDF">
+          <button onclick="triggerGlobalExport('PDF')" class="p-2 text-slate-600 hover:text-rose-600 hover:bg-slate-100 rounded-lg border border-transparent transition" title="Export PDF">
             <i data-lucide="file-text" class="w-4 h-4"></i>
-          </a>
+          </button>
 
-          <div class="text-right pl-3 border-l border-slate-200">
-            <p id="live-clock-time" class="font-mono text-xs font-bold text-slate-800">--:--:--</p>
-            <p id="live-clock-date" class="text-[10px] text-slate-500 font-medium">--</p>
+          <div class="text-right pl-2 border-l border-slate-200">
+            <p id="live-clock-time" class="font-mono text-xs font-bold text-slate-800">00:00:00 AM</p>
+            <p id="live-clock-date" class="text-[10px] text-slate-500 font-medium">Sep 28, 2026</p>
           </div>
         </div>
       </header>
@@ -237,11 +248,10 @@
           
           <!-- Top KPI Cards -->
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            
             <div class="glass-card p-4 rounded-xl border border-slate-200 flex items-center justify-between">
               <div>
                 <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Chemicals</p>
-                <h3 id="dash-kpi-chem-count" class="text-2xl font-bold text-slate-900 mt-1">6 Chemicals</h3>
+                <h3 class="text-2xl font-bold text-slate-900 mt-1">6 Types</h3>
                 <p class="text-[11px] text-emerald-600 font-semibold flex items-center gap-1 mt-1">
                   <i data-lucide="check-circle-2" class="w-3 h-3"></i> 4 Normal | 2 Ammonia
                 </p>
@@ -254,9 +264,9 @@
             <div class="glass-card p-4 rounded-xl border border-slate-200 flex items-center justify-between">
               <div>
                 <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">25% Barrel Stock</p>
-                <h3 id="dash-kpi-barrels" class="text-2xl font-bold text-amber-600 mt-1">-- Barrels</h3>
+                <h3 id="dash-kpi-barrels" class="text-2xl font-bold text-amber-600 mt-1">6 Barrels</h3>
                 <p class="text-[11px] text-slate-500 mt-1">
-                  Total Weight: <span id="dash-kpi-barrel-kg" class="text-slate-800 font-mono font-bold">-- kg</span>
+                  Total Weight: <span id="dash-kpi-barrel-kg" class="text-slate-800 font-mono font-bold">1,320 kg</span>
                 </p>
               </div>
               <div class="p-3 bg-amber-50 text-amber-600 rounded-xl border border-amber-100">
@@ -267,9 +277,9 @@
             <div class="glass-card p-4 rounded-xl border border-slate-200 flex items-center justify-between">
               <div>
                 <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">10% Ammonia Stock</p>
-                <h3 id="dash-kpi-10-stock" class="text-2xl font-bold text-cyan-600 mt-1">-- kg</h3>
+                <h3 id="dash-kpi-10-stock" class="text-2xl font-bold text-cyan-600 mt-1">1,210.0 kg</h3>
                 <p class="text-[11px] text-cyan-700 font-semibold flex items-center gap-1 mt-1">
-                  <i data-lucide="check" class="w-3 h-3"></i> Diluted Production
+                  <i data-lucide="check" class="w-3 h-3"></i> 2 Batches Ready
                 </p>
               </div>
               <div class="p-3 bg-cyan-50 text-cyan-600 rounded-xl border border-cyan-100">
@@ -279,67 +289,72 @@
 
             <div class="glass-card p-4 rounded-xl border border-slate-200 flex items-center justify-between">
               <div>
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Alerts Center</p>
-                <h3 id="dash-kpi-alerts" class="text-2xl font-bold text-rose-600 mt-1">-- Items</h3>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Stock Alerts</p>
+                <h3 class="text-2xl font-bold text-rose-600 mt-1">2 Batches</h3>
                 <p class="text-[11px] text-rose-600 font-semibold flex items-center gap-1 mt-1">
-                  <i data-lucide="alert-triangle" class="w-3 h-3"></i> Expiry & Low Stock
+                  <i data-lucide="alert-triangle" class="w-3 h-3"></i> 1 Expiring Soon | 1 Low
                 </p>
               </div>
               <div class="p-3 bg-rose-50 text-rose-600 rounded-xl border border-rose-100">
                 <i data-lucide="bell" class="w-6 h-6"></i>
               </div>
             </div>
-
           </div>
 
-          <!-- Live Ammonia Stock Breakdown Bar -->
+          <!-- Ammonia Quick Stock Snapshot Bar -->
           <div class="glass-card p-5 rounded-xl border border-slate-200 space-y-4">
             <div class="flex items-center justify-between border-b border-slate-200 pb-3">
               <div class="flex items-center gap-2">
                 <i data-lucide="beaker" class="w-5 h-5 text-cyan-600"></i>
-                <h3 class="font-bold text-sm text-slate-900">Live Ammonia Stores Breakdown (Strict Location Separation)</h3>
+                <h3 class="font-bold text-sm text-slate-900">Live Ammonia Stock Breakdown</h3>
               </div>
-              <span class="text-xs text-slate-500 font-medium">Database Synced</span>
+              <span class="text-xs text-slate-500 font-medium">Auto-synchronized with Daily Stores</span>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <!-- 25% Barrel Store -->
               <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
                 <div class="flex justify-between items-center mb-2">
-                  <span class="text-xs text-slate-600 font-bold">25% Ammonia Barrel Store</span>
-                  <span class="text-[10px] px-2 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-200 font-mono font-bold">220kg Sealed Barrels</span>
+                  <span class="text-xs text-slate-500 font-semibold">25% Barrel Store</span>
+                  <span class="text-xs px-2 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-200 font-mono font-bold">220kg Barrels</span>
                 </div>
                 <div class="flex items-baseline justify-between">
-                  <span id="snap-barrel-count" class="text-xl font-bold text-slate-900">-- Barrels</span>
-                  <span id="snap-barrel-weight" class="font-mono text-sm text-amber-700 font-bold">-- kg</span>
+                  <span id="snap-barrel-count" class="text-xl font-bold text-slate-900">6 Full Barrels</span>
+                  <span id="snap-barrel-weight" class="font-mono text-sm text-amber-700 font-bold">1,320 kg</span>
                 </div>
-                <p class="text-[10px] text-slate-500 mt-2">Individually numbered & traceable</p>
+                <div class="w-full bg-slate-200 h-2 rounded-full mt-3 overflow-hidden">
+                  <div class="bg-amber-500 h-full rounded-full" style="width: 85%"></div>
+                </div>
               </div>
 
               <!-- Ready-to-Use 25% Ammonia Store -->
               <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
                 <div class="flex justify-between items-center mb-2">
-                  <span class="text-xs text-slate-600 font-bold">Ready-to-Use 25% Store</span>
-                  <span class="text-[10px] px-2 py-0.5 rounded bg-blue-100 text-blue-800 border border-blue-200 font-mono font-bold">Unsealed Dispensing</span>
+                  <span class="text-xs text-slate-500 font-semibold">Ready-to-Use 25% Store</span>
+                  <span class="text-xs px-2 py-0.5 rounded bg-blue-100 text-blue-800 border border-blue-200 font-mono font-bold">Unsealed</span>
                 </div>
                 <div class="flex items-baseline justify-between">
-                  <span id="snap-ready-qty" class="text-xl font-bold text-slate-900">-- kg</span>
-                  <span class="font-mono text-xs text-slate-500 font-medium">Day-tank</span>
+                  <span id="snap-ready-qty" class="text-xl font-bold text-slate-900">180.00 kg</span>
+                  <span class="font-mono text-xs text-slate-500 font-medium">Capacity 500kg</span>
                 </div>
-                <p class="text-[10px] text-slate-500 mt-2">Fed by unsealed barrels</p>
+                <div class="w-full bg-slate-200 h-2 rounded-full mt-3 overflow-hidden">
+                  <div class="bg-blue-600 h-full rounded-full" style="width: 36%"></div>
+                </div>
               </div>
 
               <!-- 10% Diluted Ammonia Store -->
               <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
                 <div class="flex justify-between items-center mb-2">
-                  <span class="text-xs text-slate-600 font-bold">10% Ammonia Store</span>
-                  <span class="text-[10px] px-2 py-0.5 rounded bg-cyan-100 text-cyan-800 border border-cyan-200 font-mono font-bold">Prepared Stock</span>
+                  <span class="text-xs text-slate-500 font-semibold">10% Ammonia Store</span>
+                  <span class="text-xs px-2 py-0.5 rounded bg-cyan-100 text-cyan-800 border border-cyan-200 font-mono font-bold">Prepared</span>
                 </div>
                 <div class="flex items-baseline justify-between">
-                  <span id="snap-10-qty" class="text-xl font-bold text-slate-900">-- kg</span>
-                  <span class="font-mono text-xs text-emerald-700 font-bold">Ready</span>
+                  <span id="snap-10-qty" class="text-xl font-bold text-slate-900">1,210.00 kg</span>
+                  <span class="font-mono text-xs text-emerald-700 font-bold">Optimal</span>
                 </div>
-                <p class="text-[10px] text-slate-500 mt-2">605 kg per prepared barrel</p>
+                <div class="w-full bg-slate-200 h-2 rounded-full mt-3 overflow-hidden">
+                  <div class="bg-cyan-600 h-full rounded-full" style="width: 75%"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -347,38 +362,8 @@
           <!-- Main Dashboard Tables Grid -->
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
-            <!-- Left 2 Columns: Recent 220kg Barrel Transactions & Recent Usage -->
+            <!-- Left 2 Columns: Recent Usage & Recent Receiving -->
             <div class="lg:col-span-2 space-y-6">
-              
-              <!-- Recent 220kg Barrel History -->
-              <div class="glass-card rounded-xl border border-slate-200 p-4">
-                <div class="flex items-center justify-between mb-4">
-                  <div class="flex items-center gap-2">
-                    <i data-lucide="cylinder" class="w-4 h-4 text-amber-600"></i>
-                    <h3 class="font-bold text-sm text-slate-900">Recent 25% Ammonia Barrel Activity (220 kg Traceability)</h3>
-                  </div>
-                  <button onclick="switchTab('ammonia-barrels')" class="text-xs text-amber-700 hover:underline font-semibold">View All Barrels &rarr;</button>
-                </div>
-                <div class="overflow-x-auto">
-                  <table class="w-full text-left text-xs">
-                    <thead class="bg-slate-50 text-slate-600 uppercase text-[10px] tracking-wider border-b border-slate-200 font-bold">
-                      <tr>
-                        <th class="p-2.5">Date</th>
-                        <th class="p-2.5">Barrel ID</th>
-                        <th class="p-2.5">Batch</th>
-                        <th class="p-2.5 text-right">Quantity</th>
-                        <th class="p-2.5">Purpose</th>
-                        <th class="p-2.5">Supplier / Customer</th>
-                        <th class="p-2.5 text-right">Remaining</th>
-                      </tr>
-                    </thead>
-                    <tbody id="dash-table-barrel-history" class="divide-y divide-slate-200 text-slate-700">
-                      <!-- Rendered JS -->
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
               <!-- Recent Usage Table -->
               <div class="glass-card rounded-xl border border-slate-200 p-4">
                 <div class="flex items-center justify-between mb-4">
@@ -386,7 +371,7 @@
                     <i data-lucide="minus-circle" class="w-4 h-4 text-rose-600"></i>
                     <h3 class="font-bold text-sm text-slate-900">Recent Chemical Usage</h3>
                   </div>
-                  <button onclick="switchTab('usage')" class="text-xs text-cyan-700 hover:underline font-semibold">View Full Ledger &rarr;</button>
+                  <button onclick="switchTab('usage')" class="text-xs text-cyan-700 hover:underline font-semibold">View All</button>
                 </div>
                 <div class="overflow-x-auto">
                   <table class="w-full text-left text-xs">
@@ -406,28 +391,54 @@
                 </div>
               </div>
 
+              <!-- Recent 220kg Barrel Transactions History -->
+              <div class="glass-card rounded-xl border border-slate-200 p-4">
+                <div class="flex items-center justify-between mb-4">
+                  <div class="flex items-center gap-2">
+                    <i data-lucide="cylinder" class="w-4 h-4 text-amber-600"></i>
+                    <h3 class="font-bold text-sm text-slate-900">Recent 220 kg Ammonia Barrel History</h3>
+                  </div>
+                  <button onclick="switchTab('ammonia-barrels')" class="text-xs text-amber-700 hover:underline font-semibold">Manage Barrels</button>
+                </div>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left text-xs">
+                    <thead class="bg-slate-50 text-slate-600 uppercase text-[10px] tracking-wider border-b border-slate-200 font-bold">
+                      <tr>
+                        <th class="p-2.5">Barrel ID</th>
+                        <th class="p-2.5">Batch</th>
+                        <th class="p-2.5">Action Date</th>
+                        <th class="p-2.5 text-right">Used Qty</th>
+                        <th class="p-2.5">Purpose</th>
+                        <th class="p-2.5">Supplier / Customer</th>
+                      </tr>
+                    </thead>
+                    <tbody id="dash-table-barrel-history" class="divide-y divide-slate-200 text-slate-700">
+                      <!-- Rendered JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
 
-            <!-- Right Column: Morning Stock Status & Alert Notices -->
+            <!-- Right Column: Morning Stock Summary & System Alerts -->
             <div class="space-y-6">
-              
-              <!-- Today's Morning Physical Check Status -->
+              <!-- Today's Morning Physical Stock Log -->
               <div class="glass-card rounded-xl border border-slate-200 p-4">
                 <div class="flex items-center justify-between mb-3">
                   <div class="flex items-center gap-2">
                     <i data-lucide="sun" class="w-4 h-4 text-amber-600"></i>
-                    <h3 class="font-bold text-sm text-slate-900">Morning Physical Verification</h3>
+                    <h3 class="font-bold text-sm text-slate-900">Today's Morning Physical Entry</h3>
                   </div>
-                  <span id="dash-today-physical-status" class="px-2 py-0.5 text-[10px] font-bold rounded">--</span>
+                  <span class="text-[10px] text-slate-500 font-mono font-semibold" id="dash-today-date">2026-09-28</span>
                 </div>
                 <p class="text-[11px] text-slate-500 mb-3 leading-relaxed">
-                  Entered every working morning for Ammonia stores only. Normal chemicals do NOT require daily morning checks.
+                  Daily physical stock recorded for Ammonia stores only (Normal chemicals excluded).
                 </p>
-                <div class="space-y-2" id="dash-morning-summary">
+                <div class="space-y-2.5" id="dash-morning-summary">
                   <!-- JS populated -->
                 </div>
                 <button onclick="switchTab('daily-entry')" class="w-full mt-4 py-2 text-xs font-bold text-cyan-700 bg-slate-50 hover:bg-slate-100 rounded-lg border border-slate-200 transition">
-                  Open Daily Morning Entry &rarr;
+                  Open Daily Entry Page &rarr;
                 </button>
               </div>
 
@@ -436,15 +447,14 @@
                 <div class="flex items-center justify-between mb-3">
                   <div class="flex items-center gap-2">
                     <i data-lucide="alert-triangle" class="w-4 h-4 text-rose-600"></i>
-                    <h3 class="font-bold text-sm text-slate-900">Active Stock Alerts</h3>
+                    <h3 class="font-bold text-sm text-slate-900">Batch Expiry & Stock Warnings</h3>
                   </div>
-                  <button onclick="switchTab('alerts')" class="text-xs text-rose-600 hover:underline font-semibold">Alert Center</button>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] bg-rose-100 text-rose-700 border border-rose-200 font-bold">2 Critical</span>
                 </div>
                 <div class="space-y-2.5" id="dash-alerts-list">
                   <!-- JS populated -->
                 </div>
               </div>
-
             </div>
 
           </div>
@@ -452,7 +462,7 @@
 
         <!-- VIEW 2: DAILY MORNING STOCK ENTRY -->
         <div id="view-daily-entry" class="view-panel hidden space-y-6">
-          <div class="glass-card p-6 rounded-xl border border-slate-200 space-y-5">
+          <div class="glass-card p-6 rounded-xl border border-slate-200 space-y-4">
             <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 border-b border-slate-200 pb-4">
               <div>
                 <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
@@ -460,29 +470,29 @@
                   Daily Morning Physical Stock Verification
                 </h3>
                 <p class="text-xs text-slate-500 mt-1">
-                  Required every working morning for Ammonia stores only. Preserves every historical check permanently.
+                  Recorded every working morning. Required ONLY for 25% Barrel, Ready-to-Use 25%, and 10% Ammonia Stores.
                 </p>
               </div>
-              <div class="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-xs flex items-center gap-2">
+              <div class="p-2.5 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-xs flex items-center gap-2">
                 <i data-lucide="info" class="w-4 h-4 flex-shrink-0 text-amber-600"></i>
                 <span>TMTD, Zinc Oxide, Lauric Acid, & DAHP do NOT require daily morning entry.</span>
               </div>
             </div>
 
-            <!-- Morning Entry Form -->
+            <!-- Form to enter today's stock -->
             <form id="form-daily-stock" onsubmit="handleDailyStockSubmit(event)" class="space-y-6">
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
                 <div>
-                  <label class="block text-xs font-bold text-slate-700 mb-1">Verification Date</label>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">Entry Date</label>
                   <input type="date" id="daily-date" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs font-mono text-slate-800 focus:outline-none focus:border-cyan-600" required>
                 </div>
                 <div>
-                  <label class="block text-xs font-bold text-slate-700 mb-1">Verification Time</label>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">Entry Time</label>
                   <input type="time" id="daily-time" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs font-mono text-slate-800 focus:outline-none focus:border-cyan-600" required>
                 </div>
                 <div>
                   <label class="block text-xs font-bold text-slate-700 mb-1">Store Inspector / Officer</label>
-                  <input type="text" id="daily-operator" value="Samitha K. (Storekeeper)" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-800" required>
+                  <input type="text" value="Samitha K. (Storekeeper)" class="w-full bg-slate-100 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-500 cursor-not-allowed" readonly>
                 </div>
               </div>
 
@@ -499,15 +509,64 @@
                       <th class="p-3">Inspector Remarks</th>
                     </tr>
                   </thead>
-                  <tbody id="daily-entry-table-body" class="divide-y divide-slate-200 text-slate-700">
-                    <!-- Populated via API data -->
+                  <tbody class="divide-y divide-slate-200 text-slate-700">
+                    <!-- Row 1: 25% Barrel Stock -->
+                    <tr class="hover:bg-slate-50">
+                      <td class="p-3 font-bold text-slate-900">
+                        25% Ammonia Barrel Store
+                        <span class="block text-[10px] text-slate-500 font-normal">Count of unopened 220kg Barrels</span>
+                      </td>
+                      <td class="p-3 font-mono text-slate-500">Barrels (kg)</td>
+                      <td class="p-3 text-right font-mono text-slate-800 font-semibold" id="sys-qty-barrel">6 Barrels (1,320 kg)</td>
+                      <td class="p-3 text-right">
+                        <input type="number" step="1" id="phys-qty-barrel" value="6" oninput="calcDailyVariance()" class="w-28 text-right bg-white border border-slate-300 rounded px-2.5 py-1.5 font-mono text-xs text-slate-900 focus:border-cyan-600">
+                      </td>
+                      <td class="p-3 text-right font-mono font-bold" id="var-barrel">0 Barrels</td>
+                      <td class="p-3">
+                        <input type="text" id="rem-barrel" placeholder="e.g. All 6 seals verified intact" class="w-full bg-white border border-slate-200 rounded px-2.5 py-1 text-xs text-slate-800">
+                      </td>
+                    </tr>
+
+                    <!-- Row 2: Ready-to-Use 25% Ammonia -->
+                    <tr class="hover:bg-slate-50">
+                      <td class="p-3 font-bold text-slate-900">
+                        Ready-to-Use 25% Ammonia Store
+                        <span class="block text-[10px] text-slate-500 font-normal">Active dispensing tank / container</span>
+                      </td>
+                      <td class="p-3 font-mono text-slate-500">kg</td>
+                      <td class="p-3 text-right font-mono text-slate-800 font-semibold" id="sys-qty-ready">180.00 kg</td>
+                      <td class="p-3 text-right">
+                        <input type="number" step="0.01" id="phys-qty-ready" value="180.00" oninput="calcDailyVariance()" class="w-28 text-right bg-white border border-slate-300 rounded px-2.5 py-1.5 font-mono text-xs text-slate-900 focus:border-cyan-600">
+                      </td>
+                      <td class="p-3 text-right font-mono font-bold" id="var-ready">0.00 kg</td>
+                      <td class="p-3">
+                        <input type="text" id="rem-ready" placeholder="e.g. Dipstick level reading checked" class="w-full bg-white border border-slate-200 rounded px-2.5 py-1 text-xs text-slate-800">
+                      </td>
+                    </tr>
+
+                    <!-- Row 3: 10% Ammonia Stock -->
+                    <tr class="hover:bg-slate-50">
+                      <td class="p-3 font-bold text-slate-900">
+                        10% Ammonia Store
+                        <span class="block text-[10px] text-slate-500 font-normal">Diluted ready stock in batch vats</span>
+                      </td>
+                      <td class="p-3 font-mono text-slate-500">kg</td>
+                      <td class="p-3 text-right font-mono text-slate-800 font-semibold" id="sys-qty-10">1210.00 kg</td>
+                      <td class="p-3 text-right">
+                        <input type="number" step="0.01" id="phys-qty-10" value="1210.00" oninput="calcDailyVariance()" class="w-28 text-right bg-white border border-slate-300 rounded px-2.5 py-1.5 font-mono text-xs text-slate-900 focus:border-cyan-600">
+                      </td>
+                      <td class="p-3 text-right font-mono font-bold" id="var-10">0.00 kg</td>
+                      <td class="p-3">
+                        <input type="text" id="rem-10" placeholder="e.g. Tank 1 and Tank 2 level verified" class="w-full bg-white border border-slate-200 rounded px-2.5 py-1 text-xs text-slate-800">
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
 
               <div class="flex justify-end gap-3 pt-2">
                 <button type="submit" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-xs shadow-md flex items-center gap-2">
-                  <i data-lucide="check-circle" class="w-4 h-4"></i> Save Morning Physical Verification
+                  <i data-lucide="check-circle" class="w-4 h-4"></i> Save Morning Stock Verification
                 </button>
               </div>
             </form>
@@ -515,14 +574,9 @@
 
           <!-- Historical Morning Entry Table -->
           <div class="glass-card p-5 rounded-xl border border-slate-200 space-y-4">
-            <div class="flex justify-between items-center">
-              <h4 class="text-sm font-bold text-slate-800 flex items-center gap-2">
-                <i data-lucide="history" class="w-4 h-4 text-cyan-600"></i> Historical Daily Morning Entries (Permanent Log)
-              </h4>
-              <a href="/api/export/physical-vs-system/excel" class="text-xs text-emerald-700 hover:underline font-bold flex items-center gap-1">
-                <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i> Export Excel
-              </a>
-            </div>
+            <h4 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+              <i data-lucide="history" class="w-4 h-4 text-cyan-600"></i> Historical Daily Morning Records
+            </h4>
             <div class="overflow-x-auto">
               <table class="w-full text-left text-xs">
                 <thead class="bg-slate-50 text-slate-600 uppercase text-[10px] tracking-wider border-b border-slate-200 font-bold">
@@ -550,7 +604,7 @@
             <div>
               <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
                 <i data-lucide="minus-circle" class="w-5 h-5 text-rose-600"></i>
-                Chemical Usage Ledger
+                Chemical Usage Log
               </h3>
               <p class="text-xs text-slate-500">Record daily consumption for TMTD, Zinc Oxide, Lauric Acid, DAHP, and Ammonia stores.</p>
             </div>
@@ -559,21 +613,21 @@
             </button>
           </div>
 
-          <div class="glass-card rounded-xl border border-slate-200 p-4 space-y-4">
-            <div class="flex flex-col md:flex-row gap-3 justify-between">
-              <div class="relative w-full md:w-80">
+          <div class="glass-card rounded-xl border border-slate-200 p-4">
+            <div class="flex flex-col md:flex-row gap-3 mb-4 justify-between">
+              <div class="relative w-full md:w-72">
                 <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-slate-400"></i>
-                <input type="text" id="usage-search-input" onkeyup="filterUsageTable()" placeholder="Search batch, chemical, purpose, ref..." class="w-full bg-white border border-slate-300 rounded-lg pl-9 pr-3 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-cyan-600">
+                <input type="text" id="usage-search" onkeyup="filterUsageTable()" placeholder="Search batch, chemical, ref..." class="w-full bg-white border border-slate-300 rounded-lg pl-9 pr-3 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-cyan-600">
               </div>
               <div class="flex items-center gap-2">
-                <select id="usage-filter-chemical" onchange="filterUsageTable()" class="bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-800">
+                <select id="usage-chem-filter" onchange="filterUsageTable()" class="bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-800">
                   <option value="">All Chemicals</option>
                   <option value="TMTD">TMTD</option>
                   <option value="Zinc Oxide">Zinc Oxide</option>
                   <option value="Lauric Acid">Lauric Acid</option>
                   <option value="DAHP">DAHP</option>
-                  <option value="Ammonia 25%">Ammonia 25%</option>
-                  <option value="Ammonia 10%">Ammonia 10%</option>
+                  <option value="25% Ammonia">25% Ammonia</option>
+                  <option value="10% Ammonia">10% Ammonia</option>
                 </select>
               </div>
             </div>
@@ -582,16 +636,15 @@
               <table class="w-full text-left text-xs">
                 <thead class="bg-slate-50 text-slate-600 uppercase text-[10px] tracking-wider border-b border-slate-200 font-bold">
                   <tr>
-                    <th class="p-3">Date & Time</th>
-                    <th class="p-3">Chemical</th>
+                    <th class="p-3">Date</th>
+                    <th class="p-3">Chemical Name</th>
                     <th class="p-3">Batch Number</th>
+                    <th class="p-3">Expiry Date</th>
                     <th class="p-3">Storage Location</th>
                     <th class="p-3 text-right">Qty Used</th>
                     <th class="p-3">Purpose</th>
-                    <th class="p-3">Supplier / Customer</th>
                     <th class="p-3">Ref No.</th>
                     <th class="p-3">Remarks</th>
-                    <th class="p-3">Operator</th>
                   </tr>
                 </thead>
                 <tbody id="usage-table-tbody" class="divide-y divide-slate-200 text-slate-700">
@@ -608,9 +661,9 @@
             <div>
               <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
                 <i data-lucide="arrow-down-left-square" class="w-5 h-5 text-blue-600"></i>
-                Chemical Receiving & Goods Received Notes (GRN)
+                Chemical Receiving & Goods Received Note (GRN)
               </h3>
-              <p class="text-xs text-slate-500">Record incoming shipments. 25% Ammonia automatically creates individual 220kg barrels.</p>
+              <p class="text-xs text-slate-500">Register new incoming shipments. Special 220kg barrel creation for 25% Ammonia.</p>
             </div>
             <button onclick="openModal('modal-receiving')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold shadow-md flex items-center gap-2">
               <i data-lucide="plus-circle" class="w-4 h-4"></i> New Shipment Receiving
@@ -631,7 +684,6 @@
                     <th class="p-3">Supplier</th>
                     <th class="p-3 text-right">Received Qty</th>
                     <th class="p-3">Storage Location</th>
-                    <th class="p-3">Received By</th>
                   </tr>
                 </thead>
                 <tbody id="receiving-table-tbody" class="divide-y divide-slate-200 text-slate-700">
@@ -648,32 +700,23 @@
             <div>
               <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
                 <i data-lucide="cylinder" class="w-5 h-5 text-amber-600"></i>
-                25% Ammonia Barrel Stock Tracking (220 kg Individually Traceable)
+                25% Ammonia Barrel Stock Tracking
               </h3>
-              <p class="text-xs text-slate-500">Each barrel maintains its individual identity and complete permanent transaction history.</p>
+              <p class="text-xs text-slate-500">Individual 220 kg barrel tracking with full usage & transfer audit trails.</p>
             </div>
-            <div class="flex items-center gap-3">
-              <button onclick="openModal('modal-barrel-usage')" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-lg text-xs shadow-md flex items-center gap-2">
-                <i data-lucide="edit-3" class="w-4 h-4"></i> 25% Barrel Usage / Update
-              </button>
-            </div>
+            <button onclick="openModal('modal-barrel-usage')" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-lg text-xs shadow-md flex items-center gap-2">
+              <i data-lucide="edit-3" class="w-4 h-4"></i> Update / Use Barrel Stock
+            </button>
           </div>
 
-          <!-- Active Barrels Cards Grid -->
+          <!-- Active Barrels Grid -->
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="barrel-cards-grid">
             <!-- Dynamically populated barrel cards -->
           </div>
 
-          <!-- Permanent 220kg Barrel History Ledger -->
+          <!-- Barrel Detailed Log Table -->
           <div class="glass-card rounded-xl border border-slate-200 p-4 space-y-3">
-            <div class="flex justify-between items-center">
-              <h4 class="font-bold text-sm text-slate-800 flex items-center gap-2">
-                <i data-lucide="history" class="w-4 h-4 text-amber-600"></i> Permanent 25% Ammonia Barrel Transaction Ledger
-              </h4>
-              <a href="/api/export/ammonia-audit/excel" class="text-xs text-emerald-700 hover:underline font-bold flex items-center gap-1">
-                <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i> Export Ammonia Excel
-              </a>
-            </div>
+            <h4 class="font-bold text-sm text-slate-800">Detailed 220 kg Barrel Transaction Ledger</h4>
             <div class="overflow-x-auto">
               <table class="w-full text-left text-xs">
                 <thead class="bg-slate-50 text-slate-600 uppercase text-[10px] tracking-wider border-b border-slate-200 font-bold">
@@ -686,9 +729,7 @@
                     <th class="p-2.5 text-right">Remaining</th>
                     <th class="p-2.5">Usage Purpose</th>
                     <th class="p-2.5">Supplier / Customer</th>
-                    <th class="p-2.5">Destination</th>
                     <th class="p-2.5">Ref No</th>
-                    <th class="p-2.5">Operator</th>
                   </tr>
                 </thead>
                 <tbody id="barrel-history-tbody" class="divide-y divide-slate-200 text-slate-700">
@@ -708,33 +749,34 @@
                   <i data-lucide="droplets" class="w-5 h-5 text-blue-600"></i>
                   Ready-to-Use 25% Ammonia Store
                 </h3>
-                <p class="text-xs text-slate-500 mt-1">
-                  Active dispensing day-tank store. Tracked separately from sealed 25% barrel warehouse.
-                </p>
+                <p class="text-xs text-slate-500 mt-1">Dispensing store fed by unsealed 25% Ammonia barrels.</p>
               </div>
               <div class="text-right">
-                <span class="text-3xl font-bold font-mono text-blue-600" id="ready-store-total">-- kg</span>
-                <span class="block text-[10px] text-slate-500">Available Ready Stock</span>
+                <span class="text-2xl font-bold font-mono text-blue-600" id="ready-store-total">180.00 kg</span>
+                <span class="block text-[10px] text-slate-500">Current Dispensing Available</span>
               </div>
             </div>
 
-            <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Active Batches in Ready Store</h4>
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs">
-                <thead class="bg-slate-50 text-slate-600 uppercase text-[10px] font-bold border-b border-slate-200">
-                  <tr>
-                    <th class="p-2.5">Batch Number</th>
-                    <th class="p-2.5">Expiry Date</th>
-                    <th class="p-2.5 text-right">Received Qty</th>
-                    <th class="p-2.5 text-right">Current Available Qty</th>
-                    <th class="p-2.5">Status</th>
-                    <th class="p-2.5">Remarks</th>
-                  </tr>
-                </thead>
-                <tbody id="ready-batches-tbody" class="divide-y divide-slate-200 text-slate-700 font-mono">
-                  <!-- JS populated -->
-                </tbody>
-              </table>
+            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+              <h4 class="text-xs font-bold text-slate-700 mb-2">Active Batch Details</h4>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-mono">
+                <div>
+                  <span class="text-[10px] text-slate-500 block uppercase font-sans font-semibold">Source Batch</span>
+                  <span class="text-slate-900 font-bold" id="ready-source-batch">AM25-B001</span>
+                </div>
+                <div>
+                  <span class="text-[10px] text-slate-500 block uppercase font-sans font-semibold">Expiry Date</span>
+                  <span class="text-amber-700 font-bold">2027-03-15</span>
+                </div>
+                <div>
+                  <span class="text-[10px] text-slate-500 block uppercase font-sans font-semibold">Transferred Date</span>
+                  <span class="text-slate-700 font-semibold">2026-09-27</span>
+                </div>
+                <div>
+                  <span class="text-[10px] text-slate-500 block uppercase font-sans font-semibold">Storage Tank</span>
+                  <span class="text-cyan-700 font-bold">Ready Tank A</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -759,12 +801,13 @@
               <table class="w-full text-left text-xs">
                 <thead class="bg-slate-50 text-slate-600 uppercase text-[10px] tracking-wider border-b border-slate-200 font-bold">
                   <tr>
-                    <th class="p-3">10% Batch Number</th>
-                    <th class="p-3">Mfg / Prep Date</th>
+                    <th class="p-3">Batch Number</th>
+                    <th class="p-3">Production Date</th>
                     <th class="p-3">Expiry Date</th>
                     <th class="p-3 text-right">Produced Qty</th>
-                    <th class="p-3 text-right">Current Stock</th>
-                    <th class="p-3">Source Information</th>
+                    <th class="p-3 text-right">Used Qty</th>
+                    <th class="p-3 text-right">Current Qty</th>
+                    <th class="p-3">Source 25% Batch</th>
                     <th class="p-3">Status</th>
                   </tr>
                 </thead>
@@ -776,14 +819,14 @@
           </div>
         </div>
 
-        <!-- VIEW 5D: 10% AMMONIA PREPARATION (STRICT FIXED FORMULA) -->
+        <!-- VIEW 5D: 10% AMMONIA PREPARATION (FIXED FORMULA) -->
         <div id="view-ammonia-prep" class="view-panel hidden space-y-6">
           <div class="glass-card max-w-3xl mx-auto p-6 rounded-2xl border border-slate-200 space-y-6">
             
             <div class="border-b border-slate-200 pb-4 flex items-center justify-between">
               <div>
                 <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-cyan-100 text-cyan-800 border border-cyan-200 rounded-full">
-                  STRICT COMPANY PROTOCOL
+                  STRICT DILUTION PROTOCOL
                 </span>
                 <h3 class="text-xl font-bold text-slate-900 mt-2 flex items-center gap-2">
                   <i data-lucide="beaker" class="w-6 h-6 text-cyan-600"></i>
@@ -791,32 +834,29 @@
                 </h3>
               </div>
               <div class="text-right">
-                <p class="text-xs text-slate-500 font-medium">Standard Formula</p>
-                <p class="text-xs font-mono font-bold text-slate-800">220kg (25%) + 385kg (H₂O) = 605kg (10%)</p>
+                <p class="text-xs text-slate-500 font-medium">Formula Ratio</p>
+                <p class="text-xs font-mono font-bold text-slate-800">220kg (25%) + 385kg (H₂O)</p>
               </div>
             </div>
 
-            <!-- FIXED FORMULA DISPLAY BOX (LOCKED VALUES) -->
+            <!-- FIXED FORMULA DISPLAY BOX -->
             <div class="p-4 bg-slate-50 rounded-xl border border-cyan-200 space-y-3">
-              <div class="flex items-center justify-between">
-                <p class="text-xs font-bold text-slate-700 uppercase tracking-wider">Fixed Recipe Specification (Locked / Non-Editable)</p>
-                <span class="text-[10px] text-rose-600 font-bold bg-rose-50 border border-rose-200 px-2 py-0.5 rounded">Partial Barrels Forbidden</span>
-              </div>
+              <p class="text-xs font-bold text-slate-700 uppercase tracking-wider">Fixed Recipe Specification (Non-Editable)</p>
               <div class="grid grid-cols-3 gap-3 text-center">
-                <div class="bg-white p-3.5 rounded-lg border border-slate-200">
-                  <span class="text-[10px] text-amber-700 font-bold block uppercase">25% Ammonia Used</span>
-                  <span class="text-2xl font-mono font-bold text-slate-900 mt-1 block">220.00 kg</span>
-                  <span class="text-[10px] text-slate-500 block mt-1">Exactly 1 Complete Barrel</span>
+                <div class="bg-white p-3 rounded-lg border border-slate-200">
+                  <span class="text-[10px] text-amber-700 font-bold block">25% Ammonia Used</span>
+                  <span class="text-lg font-mono font-bold text-slate-900">220.00 kg</span>
+                  <span class="text-[9px] text-slate-500 block mt-0.5">Exactly 1 Full Barrel</span>
                 </div>
-                <div class="bg-white p-3.5 rounded-lg border border-slate-200">
-                  <span class="text-[10px] text-blue-700 font-bold block uppercase">Water Added</span>
-                  <span class="text-2xl font-mono font-bold text-slate-900 mt-1 block">385.00 kg</span>
-                  <span class="text-[10px] text-slate-500 block mt-1">Purified Dilution Water</span>
+                <div class="bg-white p-3 rounded-lg border border-slate-200">
+                  <span class="text-[10px] text-blue-700 font-bold block">Purified Water Added</span>
+                  <span class="text-lg font-mono font-bold text-slate-900">385.00 kg</span>
+                  <span class="text-[9px] text-slate-500 block mt-0.5">Automated Dispense</span>
                 </div>
-                <div class="bg-cyan-50 p-3.5 rounded-lg border border-cyan-200">
-                  <span class="text-[10px] text-cyan-800 font-bold block uppercase">10% Ammonia Produced</span>
-                  <span class="text-2xl font-mono font-bold text-cyan-700 mt-1 block">605.00 kg</span>
-                  <span class="text-[10px] text-cyan-700 block mt-1">Output Yield</span>
+                <div class="bg-cyan-50 p-3 rounded-lg border border-cyan-200">
+                  <span class="text-[10px] text-cyan-800 font-bold block">10% Ammonia Yield</span>
+                  <span class="text-xl font-mono font-bold text-cyan-700">605.00 kg</span>
+                  <span class="text-[9px] text-cyan-700 block mt-0.5">Total Prepared Stock</span>
                 </div>
               </div>
             </div>
@@ -833,37 +873,26 @@
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label class="block text-xs font-bold text-slate-700 mb-1">Production Date</label>
-                  <input type="date" id="prep-date" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-xs font-mono text-slate-800" required>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">Operator / Chemist</label>
+                  <input type="text" id="prep-operator" value="S. K. Perera (Senior Chemist)" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-xs text-slate-800" required>
                 </div>
-                <div>
-                  <label class="block text-xs font-bold text-slate-700 mb-1">New 10% Batch Expiry Date</label>
-                  <input type="date" id="prep-exp-date" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-xs font-mono text-slate-800" required>
-                </div>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label class="block text-xs font-bold text-slate-700 mb-1">Batch Reference Number</label>
-                  <input type="text" id="prep-ref" value="PREP-2026-110" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-xs font-mono text-slate-800" required>
-                </div>
-                <div>
-                  <label class="block text-xs font-bold text-slate-700 mb-1">Operator / Senior Chemist</label>
-                  <input type="text" id="prep-operator" value="Samitha K. (Storekeeper)" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-xs text-slate-800" required>
+                  <input type="text" id="prep-ref" value="PREP-2026-109" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-xs font-mono text-slate-800" required>
                 </div>
               </div>
 
               <div>
                 <label class="block text-xs font-bold text-slate-700 mb-1">Preparation Remarks</label>
-                <input type="text" id="prep-remarks" placeholder="e.g. Tank #1 preparation, standard batch run" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-xs text-slate-800">
+                <input type="text" id="prep-remarks" placeholder="e.g. Standard batch preparation in Tank #2" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-xs text-slate-800">
               </div>
 
-              <div class="pt-4 flex justify-end gap-3 border-t border-slate-200">
+              <div class="pt-4 flex justify-end gap-3">
                 <button type="button" onclick="switchTab('dashboard')" class="px-4 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-xs font-bold">
                   Cancel
                 </button>
                 <button type="submit" class="px-6 py-2.5 bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-xs rounded-lg shadow-md flex items-center gap-2">
-                  <i data-lucide="beaker" class="w-4 h-4"></i> Confirm 10% Batch Preparation (605 kg)
+                  <i data-lucide="beaker" class="w-4 h-4"></i> Confirm 10% Batch Preparation
                 </button>
               </div>
             </form>
@@ -876,9 +905,9 @@
             <div>
               <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
                 <i data-lucide="arrow-right-left" class="w-5 h-5 text-purple-600"></i>
-                Stock Transfers Between Locations
+                Stock Transfers Between Stores
               </h3>
-              <p class="text-xs text-slate-500">Transfers stock between warehouses while preserving original batch numbers.</p>
+              <p class="text-xs text-slate-500">Transfer chemicals between locations without altering original batch integrity.</p>
             </div>
             <button onclick="openModal('modal-transfer')" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold shadow-md flex items-center gap-2">
               <i data-lucide="plus" class="w-4 h-4"></i> New Location Transfer
@@ -890,16 +919,14 @@
               <table class="w-full text-left text-xs">
                 <thead class="bg-slate-50 text-slate-600 uppercase text-[10px] tracking-wider border-b border-slate-200 font-bold">
                   <tr>
-                    <th class="p-3">Date & Time</th>
+                    <th class="p-3">Date</th>
                     <th class="p-3">Chemical</th>
                     <th class="p-3">Batch Number</th>
-                    <th class="p-3">Barrel ID</th>
                     <th class="p-3">Source Location</th>
                     <th class="p-3">Destination Location</th>
                     <th class="p-3 text-right">Transfer Qty</th>
                     <th class="p-3">Ref No</th>
                     <th class="p-3">Purpose / Remarks</th>
-                    <th class="p-3">Operator</th>
                   </tr>
                 </thead>
                 <tbody id="transfers-tbody" class="divide-y divide-slate-200 text-slate-700">
@@ -910,7 +937,7 @@
           </div>
         </div>
 
-        <!-- VIEW 7: CHEMICALS MASTER -->
+        <!-- VIEW 7: CHEMICALS INVENTORY -->
         <div id="view-chemicals" class="view-panel hidden space-y-6">
           <div class="flex justify-between items-center">
             <div>
@@ -918,7 +945,7 @@
                 <i data-lucide="package" class="w-5 h-5 text-indigo-600"></i>
                 Chemical Master Inventory
               </h3>
-              <p class="text-xs text-slate-500">Registered store chemicals, default units, and minimum stock alert thresholds.</p>
+              <p class="text-xs text-slate-500">Registered store chemicals and stock thresholds.</p>
             </div>
           </div>
 
@@ -933,21 +960,18 @@
             <div>
               <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
                 <i data-lucide="boxes" class="w-5 h-5 text-amber-600"></i>
-                Batch & Expiry Management
+                Batch & Expiry Ledger
               </h3>
-              <p class="text-xs text-slate-500">Strict batch segregation and real-time expiration monitoring.</p>
+              <p class="text-xs text-slate-500">Strict batch segregation and expiration status tracking.</p>
             </div>
             
-            <div class="flex items-center gap-3">
-              <select id="batch-filter-status" onchange="loadBatchesTable()" class="bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-800">
+            <div class="flex items-center gap-2">
+              <select id="batch-status-filter" onchange="filterBatchesTable()" class="bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-800">
                 <option value="">All Statuses</option>
-                <option value="Valid">Valid Stock</option>
+                <option value="Active">Active Stock</option>
                 <option value="Expiring Soon">Expiring Soon</option>
                 <option value="Expired">Expired</option>
               </select>
-              <button onclick="openModal('modal-add-batch')" class="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm">
-                <i data-lucide="plus" class="w-3.5 h-3.5"></i> Register Batch
-              </button>
             </div>
           </div>
 
@@ -963,7 +987,7 @@
                     <th class="p-3">Supplier</th>
                     <th class="p-3">Storage Location</th>
                     <th class="p-3 text-right">Received Qty</th>
-                    <th class="p-3 text-right">Current Available</th>
+                    <th class="p-3 text-right">Current Qty</th>
                     <th class="p-3">Status</th>
                   </tr>
                 </thead>
@@ -983,15 +1007,14 @@
                 <i data-lucide="file-spreadsheet" class="w-5 h-5 text-teal-600"></i>
                 Store Reports & Analytics
               </h3>
-              <p class="text-xs text-slate-500">Official ledger reports with verified Excel and PDF export downloads.</p>
+              <p class="text-xs text-slate-500">Generate monthly usage summaries, stock balances, and ammonia audits.</p>
             </div>
-            
             <div class="flex items-center gap-2">
-              <button onclick="downloadActiveReportExcel()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm">
-                <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i> Download Excel (.xlsx)
+              <button onclick="triggerGlobalExport('Excel')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold flex items-center gap-1.5">
+                <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i> Export Excel
               </button>
-              <button onclick="downloadActiveReportPDF()" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm">
-                <i data-lucide="file-text" class="w-3.5 h-3.5"></i> Download PDF (.pdf)
+              <button onclick="triggerGlobalExport('PDF')" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold flex items-center gap-1.5">
+                <i data-lucide="file-text" class="w-3.5 h-3.5"></i> Export PDF
               </button>
             </div>
           </div>
@@ -1000,8 +1023,7 @@
           <div class="flex border-b border-slate-200 space-x-2 text-xs font-medium overflow-x-auto pb-1">
             <button onclick="selectReportTab('daily')" id="rtab-daily" class="px-4 py-2 text-cyan-700 border-b-2 border-cyan-700 font-bold whitespace-nowrap">Daily Store Movement</button>
             <button onclick="selectReportTab('usage')" id="rtab-usage" class="px-4 py-2 text-slate-500 hover:text-slate-800 whitespace-nowrap">Monthly Chemical Usage</button>
-            <button onclick="selectReportTab('stock')" id="rtab-stock" class="px-4 py-2 text-slate-500 hover:text-slate-800 whitespace-nowrap">Stock Balance by Batch</button>
-            <button onclick="selectReportTab('ammonia')" id="rtab-ammonia" class="px-4 py-2 text-slate-500 hover:text-slate-800 whitespace-nowrap">Ammonia Barrels & Dilution Audit</button>
+            <button onclick="selectReportTab('ammonia')" id="rtab-ammonia" class="px-4 py-2 text-slate-500 hover:text-slate-800 whitespace-nowrap">25% & 10% Ammonia Audit</button>
             <button onclick="selectReportTab('physical-vs-sys')" id="rtab-physical-vs-sys" class="px-4 py-2 text-slate-500 hover:text-slate-800 whitespace-nowrap">Physical vs System Reconciliation</button>
           </div>
 
@@ -1013,42 +1035,43 @@
         <!-- VIEW 10: HISTORICAL AUDIT LOG -->
         <div id="view-history" class="view-panel hidden space-y-6">
           <div class="glass-card p-4 rounded-xl border border-slate-200 space-y-4">
-            <div class="flex justify-between items-center">
-              <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
-                <i data-lucide="history" class="w-5 h-5 text-slate-500"></i>
-                Historical Transaction Traceability Ledger
-              </h3>
-              <button onclick="downloadHistoricalExcel()" class="text-xs text-emerald-700 hover:underline font-bold flex items-center gap-1">
-                <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i> Export Ledger (.xlsx)
-              </button>
-            </div>
+            <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+              <i data-lucide="history" class="w-5 h-5 text-slate-500"></i>
+              Complete Historical Transaction Traceability Ledger
+            </h3>
             
-            <!-- Multi-Filter Search Bar -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-3 bg-slate-50 p-3 rounded-lg border border-slate-200">
+            <!-- Multi-Filter Bar -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
               <div>
-                <label class="block text-[10px] uppercase font-bold text-slate-500 mb-1">Keywords</label>
-                <input type="text" id="hist-search" onkeyup="loadHistoricalTransactions()" placeholder="Batch, Barrel, Ref, Supplier..." class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-800">
+                <label class="block text-[10px] uppercase font-bold text-slate-500 mb-1">Search Keywords</label>
+                <input type="text" id="hist-search" onkeyup="filterHistoryTable()" placeholder="Batch, Barrel, Ref, Supplier..." class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-800">
               </div>
               <div>
                 <label class="block text-[10px] uppercase font-bold text-slate-500 mb-1">Transaction Type</label>
-                <select id="hist-type-filter" onchange="loadHistoricalTransactions()" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-800">
+                <select id="hist-type-filter" onchange="filterHistoryTable()" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-800">
                   <option value="">All Types</option>
                   <option value="Usage">Usage</option>
-                  <option value="Receiving">Receiving (GRN)</option>
-                  <option value="Preparation">Ammonia Preparation</option>
+                  <option value="Receiving">Receiving</option>
+                  <option value="Preparation">Ammonia Prep</option>
                   <option value="Transfer">Stock Transfer</option>
+                  <option value="Verification">Morning Verification</option>
                 </select>
               </div>
               <div>
                 <label class="block text-[10px] uppercase font-bold text-slate-500 mb-1">Chemical</label>
-                <select id="hist-chem-filter" onchange="loadHistoricalTransactions()" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-800">
+                <select id="hist-chem-filter" onchange="filterHistoryTable()" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-800">
                   <option value="">All Chemicals</option>
-                  <!-- Populated -->
+                  <option value="25% Ammonia">25% Ammonia</option>
+                  <option value="10% Ammonia">10% Ammonia</option>
+                  <option value="TMTD">TMTD</option>
+                  <option value="Zinc Oxide">Zinc Oxide</option>
+                  <option value="Lauric Acid">Lauric Acid</option>
+                  <option value="DAHP">DAHP</option>
                 </select>
               </div>
               <div>
-                <label class="block text-[10px] uppercase font-bold text-slate-500 mb-1">Date Filter</label>
-                <input type="date" id="hist-date-filter" onchange="loadHistoricalTransactions()" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-800 font-mono">
+                <label class="block text-[10px] uppercase font-bold text-slate-500 mb-1">Date Range</label>
+                <input type="date" id="hist-date-filter" onchange="filterHistoryTable()" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-800 font-mono">
               </div>
             </div>
 
@@ -1063,9 +1086,7 @@
                     <th class="p-2.5 text-right">Quantity</th>
                     <th class="p-2.5">Purpose / Action</th>
                     <th class="p-2.5">Supplier / Customer</th>
-                    <th class="p-2.5">Location</th>
                     <th class="p-2.5">Ref No.</th>
-                    <th class="p-2.5">Operator</th>
                   </tr>
                 </thead>
                 <tbody id="history-tbody" class="divide-y divide-slate-200 text-slate-700">
@@ -1091,74 +1112,38 @@
 
         <!-- VIEW 12: SETTINGS & USERS -->
         <div id="view-settings" class="view-panel hidden space-y-6">
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="glass-card p-6 rounded-xl border border-slate-200 space-y-6 max-w-2xl">
+            <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+              <i data-lucide="settings" class="w-5 h-5 text-slate-500"></i>
+              System Settings & User Management
+            </h3>
             
-            <div class="glass-card p-6 rounded-xl border border-slate-200 space-y-5">
-              <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
-                <i data-lucide="sliders" class="w-5 h-5 text-slate-500"></i>
-                System Configuration
-              </h3>
-              
-              <div class="space-y-4 text-xs">
+            <div class="space-y-4">
+              <h4 class="text-xs font-bold text-cyan-700 uppercase tracking-wider">Alert Thresholds</h4>
+              <div class="grid grid-cols-2 gap-4 text-xs">
                 <div>
-                  <label class="block text-slate-700 font-bold mb-1">Expiry Warning Lead Days</label>
-                  <input type="number" id="setting-expiry-days" value="30" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 font-mono text-slate-800">
-                  <p class="text-[10px] text-slate-500 mt-1">Batches expiring within this number of days will be flagged as Expiring Soon.</p>
+                  <label class="block text-slate-700 font-medium mb-1">Expiry Warning Lead Days</label>
+                  <input type="number" value="30" class="w-full bg-white border border-slate-300 rounded p-2 text-slate-800 font-mono">
                 </div>
-
-                <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
-                  <p class="font-bold text-slate-800 text-[11px]">10% Ammonia Dilution Specification (Hard-Locked)</p>
-                  <p class="text-[10px] text-slate-500 leading-relaxed">
-                    25% Ammonia: 220.00 kg | Water Added: 385.00 kg | Output: 605.00 kg. Fixed business protocol, not editable.
-                  </p>
+                <div>
+                  <label class="block text-slate-700 font-medium mb-1">Minimum Ammonia Barrels Alert</label>
+                  <input type="number" value="2" class="w-full bg-white border border-slate-300 rounded p-2 text-slate-800 font-mono">
                 </div>
-
-                <button onclick="saveSystemSettings()" class="px-4 py-2 bg-cyan-700 hover:bg-cyan-800 text-white rounded-lg font-bold">
-                  Save Configuration
-                </button>
               </div>
             </div>
 
-            <!-- Controlled Stock Adjustment (Admin Role) -->
-            <div class="glass-card p-6 rounded-xl border border-slate-200 space-y-5">
-              <div class="flex items-center justify-between">
-                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
-                  <i data-lucide="shield-alert" class="w-5 h-5 text-purple-600"></i>
-                  Controlled Stock Adjustment (Admin Only)
-                </h3>
-                <span class="text-[10px] px-2 py-0.5 rounded bg-purple-100 text-purple-800 border border-purple-200 font-bold">Audited</span>
+            <div class="border-t border-slate-200 pt-4 space-y-3">
+              <h4 class="text-xs font-bold text-cyan-700 uppercase tracking-wider">Authorized Storekeeper Accounts</h4>
+              <div class="space-y-2">
+                <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 flex items-center justify-between text-xs">
+                  <div>
+                    <p class="font-bold text-slate-900">Samitha K.</p>
+                    <p class="text-slate-500 text-[10px]">samitha@latexchem.lk &bull; Chief Storekeeper</p>
+                  </div>
+                  <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 border border-emerald-200 rounded text-[10px] font-bold">Active</span>
+                </div>
               </div>
-              
-              <form id="form-stock-adj" onsubmit="handleAdjustmentSubmit(event)" class="space-y-3 text-xs">
-                <div>
-                  <label class="block text-slate-700 font-bold mb-1">Select Batch</label>
-                  <select id="adj-select-batch" onchange="updateAdjustmentBatchMeta()" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800 font-mono" required>
-                    <!-- Populated -->
-                  </select>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                  <div>
-                    <label class="block text-slate-700 font-bold mb-1">Current Quantity</label>
-                    <input type="text" id="adj-curr-qty" readonly class="w-full bg-slate-100 border border-slate-200 rounded-lg p-2.5 font-mono text-slate-500">
-                  </div>
-                  <div>
-                    <label class="block text-slate-700 font-bold mb-1">New Verified Quantity</label>
-                    <input type="number" step="0.01" id="adj-new-qty" placeholder="0.00" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 font-mono text-slate-900 font-bold" required>
-                  </div>
-                </div>
-
-                <div>
-                  <label class="block text-slate-700 font-bold mb-1">Mandatory Justification / Reason</label>
-                  <input type="text" id="adj-reason" placeholder="e.g. Physical inventory variance reconciliation verified by QA" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800" required>
-                </div>
-
-                <button type="submit" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-bold shadow-md">
-                  Execute Controlled Adjustment
-                </button>
-              </form>
             </div>
-
           </div>
         </div>
 
@@ -1180,7 +1165,13 @@
         <div>
           <label class="block text-slate-700 font-bold mb-1">Select Chemical</label>
           <select id="usage-chem-select" onchange="populateUsageBatches()" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800" required>
-            <!-- Populated via API -->
+            <option value="">-- Choose Chemical --</option>
+            <option value="TMTD">TMTD</option>
+            <option value="Zinc Oxide">Zinc Oxide</option>
+            <option value="Lauric Acid">Lauric Acid</option>
+            <option value="DAHP">DAHP</option>
+            <option value="25% Ammonia">25% Ammonia</option>
+            <option value="10% Ammonia">10% Ammonia</option>
           </select>
         </div>
 
@@ -1192,8 +1183,8 @@
             </select>
           </div>
           <div>
-            <label class="block text-slate-700 font-bold mb-1">Available Batch Stock</label>
-            <input type="text" id="usage-available-meta" readonly class="w-full bg-slate-100 border border-slate-200 text-cyan-800 font-bold font-mono rounded-lg p-2.5">
+            <label class="block text-slate-700 font-bold mb-1">Expiry Date</label>
+            <input type="text" id="usage-expiry-meta" readonly class="w-full bg-slate-100 border border-slate-200 text-slate-500 rounded-lg p-2.5 font-mono">
           </div>
         </div>
 
@@ -1209,14 +1200,19 @@
         </div>
 
         <div>
+          <label class="block text-slate-700 font-bold mb-1">Storage Location</label>
+          <input type="text" id="usage-location" readonly class="w-full bg-slate-100 border border-slate-200 text-slate-500 rounded-lg p-2.5">
+        </div>
+
+        <div>
           <label class="block text-slate-700 font-bold mb-1">Purpose of Usage</label>
-          <input type="text" id="usage-purpose" placeholder="e.g. Batch #402 Compounding Line A" class="w-full bg-white border border-slate-300 text-slate-800 rounded-lg p-2.5" required>
+          <input type="text" id="usage-purpose" placeholder="e.g. Batch #402 Compounding" class="w-full bg-white border border-slate-300 text-slate-800 rounded-lg p-2.5" required>
         </div>
 
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-slate-700 font-bold mb-1">Reference Number</label>
-            <input type="text" id="usage-ref" value="USG-2026-90" class="w-full bg-white border border-slate-300 text-slate-800 font-mono rounded-lg p-2.5" required>
+            <input type="text" id="usage-ref" value="USG-2026-88" class="w-full bg-white border border-slate-300 text-slate-800 font-mono rounded-lg p-2.5" required>
           </div>
           <div>
             <label class="block text-slate-700 font-bold mb-1">Date</label>
@@ -1225,16 +1221,11 @@
         </div>
 
         <div>
-          <label class="block text-slate-700 font-bold mb-1">Supplier / Customer (Optional)</label>
-          <input type="text" id="usage-customer" placeholder="e.g. Dipping Line B / Internal" class="w-full bg-white border border-slate-300 text-slate-800 rounded-lg p-2.5">
-        </div>
-
-        <div>
           <label class="block text-slate-700 font-bold mb-1">Remarks</label>
-          <input type="text" id="usage-remarks" placeholder="Optional notes" class="w-full bg-white border border-slate-300 text-slate-800 rounded-lg p-2.5">
+          <input type="text" id="usage-remarks" placeholder="Optional remarks" class="w-full bg-white border border-slate-300 text-slate-800 rounded-lg p-2.5">
         </div>
 
-        <div class="pt-3 flex justify-end gap-2 border-t border-slate-200">
+        <div class="pt-3 flex justify-end gap-2">
           <button type="button" onclick="closeModal('modal-usage')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg">Cancel</button>
           <button type="submit" class="px-5 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-lg shadow-md">
             Submit Usage
@@ -1244,7 +1235,7 @@
     </div>
   </div>
 
-  <!-- MODAL 2: 25% AMMONIA BARREL USAGE / UPDATE -->
+  <!-- MODAL 2: AMMONIA BARREL USAGE / UPDATE -->
   <div id="modal-barrel-usage" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
     <div class="bg-white border border-slate-200 rounded-2xl w-full max-w-lg shadow-2xl space-y-4 p-6">
       <div class="flex justify-between items-center border-b border-slate-200 pb-3">
@@ -1256,9 +1247,9 @@
 
       <form id="form-barrel-usage" onsubmit="handleBarrelUsageSubmit(event)" class="space-y-3 text-xs">
         <div>
-          <label class="block text-slate-700 font-bold mb-1">Select Barrel (Batch Number)</label>
+          <label class="block text-slate-700 font-bold mb-1">Select Barrel / Batch</label>
           <select id="bu-select-barrel" onchange="updateBarrelModalMeta()" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800 font-mono" required>
-            <!-- Populated via API -->
+            <!-- Populated via JS -->
           </select>
         </div>
 
@@ -1269,7 +1260,7 @@
           </div>
           <div>
             <label class="block text-slate-700 font-bold mb-1">Current Stock in Barrel</label>
-            <input type="text" id="bu-curr-qty" readonly class="w-full bg-slate-100 border border-slate-200 text-amber-800 font-bold rounded-lg p-2.5 font-mono">
+            <input type="text" id="bu-curr-qty" readonly class="w-full bg-slate-100 border border-slate-200 text-amber-700 font-bold rounded-lg p-2.5 font-mono">
           </div>
         </div>
 
@@ -1286,7 +1277,7 @@
 
         <div>
           <label class="block text-slate-700 font-bold mb-1">Usage Purpose</label>
-          <select id="bu-purpose" onchange="toggleCustomerSupplierField()" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800 font-medium" required>
+          <select id="bu-purpose" onchange="toggleCustomerSupplierField()" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800" required>
             <option value="10% Ammonia Preparation">10% Ammonia Preparation</option>
             <option value="25% Ammonia Usage">25% Ammonia Usage</option>
             <option value="Transfer to Ready-to-Use 25% Ammonia Store">Transfer to Ready-to-Use 25% Ammonia Store</option>
@@ -1295,15 +1286,15 @@
           </select>
         </div>
 
-        <div id="bu-customer-wrapper">
+        <div id="bu-customer-wrapper" class="hidden">
           <label class="block text-slate-700 font-bold mb-1">Supplier / Customer Name</label>
-          <input type="text" id="bu-customer" placeholder="e.g. Lanka Latex Supplies Ltd / Dipping Plant" class="w-full bg-white border border-slate-300 text-slate-800 rounded-lg p-2.5">
+          <input type="text" id="bu-customer" placeholder="e.g. Lanka Latex Supplies Ltd" class="w-full bg-white border border-slate-300 text-slate-800 rounded-lg p-2.5">
         </div>
 
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-slate-700 font-bold mb-1">Reference Number</label>
-            <input type="text" id="bu-ref" value="BAR-2026-05" class="w-full bg-white border border-slate-300 text-slate-800 font-mono rounded-lg p-2.5" required>
+            <input type="text" id="bu-ref" value="BAR-2026-04" class="w-full bg-white border border-slate-300 text-slate-800 font-mono rounded-lg p-2.5" required>
           </div>
           <div>
             <label class="block text-slate-700 font-bold mb-1">Destination / Location</label>
@@ -1313,10 +1304,10 @@
 
         <div>
           <label class="block text-slate-700 font-bold mb-1">Remarks</label>
-          <input type="text" id="bu-remarks" placeholder="Optional notes..." class="w-full bg-white border border-slate-300 text-slate-800 rounded-lg p-2.5">
+          <input type="text" id="bu-remarks" placeholder="Notes..." class="w-full bg-white border border-slate-300 text-slate-800 rounded-lg p-2.5">
         </div>
 
-        <div class="pt-3 flex justify-end gap-2 border-t border-slate-200">
+        <div class="pt-3 flex justify-end gap-2">
           <button type="button" onclick="closeModal('modal-barrel-usage')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg">Cancel</button>
           <button type="submit" class="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-lg shadow-md">
             Confirm Barrel Transaction
@@ -1326,12 +1317,12 @@
     </div>
   </div>
 
-  <!-- MODAL 3: CHEMICAL RECEIVING (GRN) -->
+  <!-- MODAL 3: RECEIVING SHIPMENT -->
   <div id="modal-receiving" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
     <div class="bg-white border border-slate-200 rounded-2xl w-full max-w-lg shadow-2xl space-y-4 p-6">
       <div class="flex justify-between items-center border-b border-slate-200 pb-3">
         <h3 class="font-bold text-slate-900 flex items-center gap-2">
-          <i data-lucide="arrow-down-left-square" class="w-5 h-5 text-blue-600"></i> Record Incoming Shipment (GRN)
+          <i data-lucide="arrow-down-left-square" class="w-5 h-5 text-blue-600"></i> Record Incoming Chemical GRN
         </h3>
         <button onclick="closeModal('modal-receiving')" class="text-slate-400 hover:text-slate-700"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
@@ -1340,40 +1331,45 @@
         <div>
           <label class="block text-slate-700 font-bold mb-1">Chemical</label>
           <select id="rcv-chem" onchange="toggleReceivingBarrelNotice()" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800" required>
-            <!-- Populated -->
+            <option value="25% Ammonia">25% Ammonia (220kg Barrels)</option>
+            <option value="TMTD">TMTD</option>
+            <option value="Zinc Oxide">Zinc Oxide</option>
+            <option value="Lauric Acid">Lauric Acid</option>
+            <option value="DAHP">DAHP</option>
+            <option value="10% Ammonia">10% Ammonia</option>
           </select>
         </div>
 
-        <div id="rcv-barrel-notice" class="p-2.5 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-[11px] leading-relaxed">
-          <b>25% Ammonia Barrels:</b> Receiving 25% Ammonia will automatically generate individual 220 kg Barrel records with individual Barrel IDs in the 25% Ammonia Barrel Store.
+        <div id="rcv-barrel-notice" class="p-2.5 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-[11px]">
+          Receiving 25% Ammonia will automatically generate individual 220 kg Barrel records with unique Barrel IDs.
         </div>
 
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-slate-700 font-bold mb-1">Batch Number</label>
-            <input type="text" id="rcv-batch" placeholder="e.g. AM25-B005" class="w-full bg-white border border-slate-300 text-slate-800 font-mono rounded-lg p-2.5" required>
+            <input type="text" id="rcv-batch" placeholder="e.g. AM25-B008" class="w-full bg-white border border-slate-300 text-slate-800 font-mono rounded-lg p-2.5" required>
           </div>
           <div>
             <label class="block text-slate-700 font-bold mb-1">GRN / Invoice Number</label>
-            <input type="text" id="rcv-grn" value="GRN-2026-101" class="w-full bg-white border border-slate-300 text-slate-800 font-mono rounded-lg p-2.5" required>
+            <input type="text" id="rcv-grn" value="GRN-2026-99" class="w-full bg-white border border-slate-300 text-slate-800 font-mono rounded-lg p-2.5" required>
           </div>
         </div>
 
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-slate-700 font-bold mb-1">Quantity Received (kg)</label>
-            <input type="number" step="0.01" id="rcv-qty" placeholder="e.g. 220" class="w-full bg-white border border-slate-300 text-slate-800 font-mono rounded-lg p-2.5" required>
+            <label class="block text-slate-700 font-bold mb-1">Quantity Received</label>
+            <input type="number" step="0.01" id="rcv-qty" placeholder="e.g. 440" class="w-full bg-white border border-slate-300 text-slate-800 font-mono rounded-lg p-2.5" required>
           </div>
           <div>
-            <label class="block text-slate-700 font-bold mb-1">Date Received</label>
-            <input type="date" id="rcv-date" class="w-full bg-white border border-slate-300 text-slate-800 font-mono rounded-lg p-2.5" required>
+            <label class="block text-slate-700 font-bold mb-1">Unit</label>
+            <input type="text" id="rcv-unit" value="kg" class="w-full bg-slate-100 border border-slate-200 text-slate-500 rounded-lg p-2.5">
           </div>
         </div>
 
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-slate-700 font-bold mb-1">Manufacturing Date</label>
-            <input type="date" id="rcv-mfg-date" class="w-full bg-white border border-slate-300 text-slate-800 font-mono rounded-lg p-2.5">
+            <input type="date" id="rcv-mfg-date" class="w-full bg-white border border-slate-300 text-slate-800 font-mono rounded-lg p-2.5" required>
           </div>
           <div>
             <label class="block text-slate-700 font-bold mb-1">Expiry Date</label>
@@ -1382,25 +1378,21 @@
         </div>
 
         <div>
-          <label class="block text-slate-700 font-bold mb-1">Supplier</label>
-          <select id="rcv-supplier" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800" required>
-            <!-- Populated -->
-          </select>
+          <label class="block text-slate-700 font-bold mb-1">Supplier Name</label>
+          <input type="text" id="rcv-supplier" placeholder="e.g. PetroChem Asia Ltd" class="w-full bg-white border border-slate-300 text-slate-800 rounded-lg p-2.5" required>
         </div>
 
         <div>
           <label class="block text-slate-700 font-bold mb-1">Storage Location</label>
           <select id="rcv-location" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800" required>
-            <!-- Populated -->
+            <option value="25% Ammonia Barrel Store">25% Ammonia Barrel Store</option>
+            <option value="Main Chemical Store">Main Chemical Store</option>
+            <option value="Ready-to-Use 25% Ammonia Store">Ready-to-Use 25% Ammonia Store</option>
+            <option value="10% Ammonia Store">10% Ammonia Store</option>
           </select>
         </div>
 
-        <div>
-          <label class="block text-slate-700 font-bold mb-1">Remarks</label>
-          <input type="text" id="rcv-remarks" placeholder="Optional shipment notes" class="w-full bg-white border border-slate-300 text-slate-800 rounded-lg p-2.5">
-        </div>
-
-        <div class="pt-3 flex justify-end gap-2 border-t border-slate-200">
+        <div class="pt-3 flex justify-end gap-2">
           <button type="button" onclick="closeModal('modal-receiving')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg">Cancel</button>
           <button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-md">
             Save GRN Shipment
@@ -1424,7 +1416,13 @@
         <div>
           <label class="block text-slate-700 font-bold mb-1">Chemical</label>
           <select id="trf-chem" onchange="populateTransferBatches()" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800" required>
-            <!-- Populated -->
+            <option value="">-- Choose Chemical --</option>
+            <option value="25% Ammonia">25% Ammonia</option>
+            <option value="10% Ammonia">10% Ammonia</option>
+            <option value="TMTD">TMTD</option>
+            <option value="Zinc Oxide">Zinc Oxide</option>
+            <option value="Lauric Acid">Lauric Acid</option>
+            <option value="DAHP">DAHP</option>
           </select>
         </div>
 
@@ -1445,23 +1443,27 @@
           <div>
             <label class="block text-slate-700 font-bold mb-1">Source Location</label>
             <select id="trf-source" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800" required>
-              <!-- Populated -->
+              <option value="25% Ammonia Barrel Store">25% Ammonia Barrel Store</option>
+              <option value="Main Chemical Store">Main Chemical Store</option>
+              <option value="Ready-to-Use 25% Ammonia Store">Ready-to-Use 25% Ammonia Store</option>
             </select>
           </div>
           <div>
             <label class="block text-slate-700 font-bold mb-1">Destination Location</label>
             <select id="trf-dest" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800" required>
-              <!-- Populated -->
+              <option value="Ready-to-Use 25% Ammonia Store">Ready-to-Use 25% Ammonia Store</option>
+              <option value="10% Ammonia Store">10% Ammonia Store</option>
+              <option value="Main Chemical Store">Main Chemical Store</option>
             </select>
           </div>
         </div>
 
         <div>
           <label class="block text-slate-700 font-bold mb-1">Purpose / Remarks</label>
-          <input type="text" id="trf-remarks" placeholder="e.g. Unsealing barrel for Ready-to-Use Store" class="w-full bg-white border border-slate-300 text-slate-800 rounded-lg p-2.5" required>
+          <input type="text" id="trf-remarks" placeholder="e.g. Unsealing barrel for daily ready-use store" class="w-full bg-white border border-slate-300 text-slate-800 rounded-lg p-2.5" required>
         </div>
 
-        <div class="pt-3 flex justify-end gap-2 border-t border-slate-200">
+        <div class="pt-3 flex justify-end gap-2">
           <button type="button" onclick="closeModal('modal-transfer')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg">Cancel</button>
           <button type="submit" class="px-5 py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg shadow-md">
             Execute Transfer
@@ -1471,102 +1473,1088 @@
     </div>
   </div>
 
-  <!-- MODAL 5: 10% PREPARATION QUICK MODAL -->
-  <div id="modal-prep" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-    <div class="bg-white border border-slate-200 rounded-2xl w-full max-w-lg shadow-2xl space-y-4 p-6">
-      <div class="flex justify-between items-center border-b border-slate-200 pb-3">
-        <h3 class="font-bold text-slate-900 flex items-center gap-2">
-          <i data-lucide="beaker" class="w-5 h-5 text-cyan-600"></i> Prepare 10% Ammonia (605 kg)
-        </h3>
-        <button onclick="closeModal('modal-prep')" class="text-slate-400 hover:text-slate-700"><i data-lucide="x" class="w-5 h-5"></i></button>
-      </div>
-
-      <div class="p-3 bg-cyan-50 border border-cyan-200 rounded-lg text-xs space-y-1">
-        <p class="font-bold text-cyan-900">Standard Locked Preparation Yield:</p>
-        <p class="text-cyan-800">220 kg 25% Ammonia Barrel + 385 kg Water = <b>605 kg 10% Ammonia</b></p>
-      </div>
-
-      <form id="form-prep-modal" onsubmit="handleModalPrepSubmit(event)" class="space-y-3 text-xs">
-        <div>
-          <label class="block text-slate-700 font-bold mb-1">Select 25% Ammonia Barrel (Must have ≥ 220 kg)</label>
-          <select id="modal-prep-select-barrel" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800 font-mono" required>
-            <!-- Populated -->
-          </select>
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-slate-700 font-bold mb-1">Production Date</label>
-            <input type="date" id="modal-prep-date" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800 font-mono" required>
-          </div>
-          <div>
-            <label class="block text-slate-700 font-bold mb-1">Expiry Date (10%)</label>
-            <input type="date" id="modal-prep-exp" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800 font-mono" required>
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-slate-700 font-bold mb-1">Reference Number</label>
-          <input type="text" id="modal-prep-ref" value="PREP-2026-111" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800 font-mono" required>
-        </div>
-
-        <div>
-          <label class="block text-slate-700 font-bold mb-1">Remarks</label>
-          <input type="text" id="modal-prep-remarks" placeholder="Optional batch remarks" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800">
-        </div>
-
-        <div class="pt-3 flex justify-end gap-2 border-t border-slate-200">
-          <button type="button" onclick="closeModal('modal-prep')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg">Cancel</button>
-          <button type="submit" class="px-5 py-2 bg-cyan-600 hover:bg-cyan-700 text-white font-bold rounded-lg shadow-md">
-            Confirm & Produce 605 kg
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- MODAL 6: ROLE & USER SWITCHER -->
-  <div id="modal-role-switch" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-    <div class="bg-white border border-slate-200 rounded-2xl w-full max-w-sm shadow-2xl space-y-4 p-6">
-      <div class="flex justify-between items-center border-b border-slate-200 pb-3">
-        <h3 class="font-bold text-slate-900 flex items-center gap-2">
-          <i data-lucide="user-check" class="w-5 h-5 text-cyan-600"></i> Switch Active Account
-        </h3>
-        <button onclick="closeModal('modal-role-switch')" class="text-slate-400 hover:text-slate-700"><i data-lucide="x" class="w-5 h-5"></i></button>
-      </div>
-
-      <div class="space-y-2 text-xs">
-        <button onclick="loginAs('admin', 'admin123')" class="w-full p-3 bg-slate-50 hover:bg-slate-100 rounded-xl border border-slate-200 flex items-center justify-between text-left transition">
-          <div>
-            <p class="font-bold text-slate-900">Administrator</p>
-            <p class="text-[10px] text-slate-500">Full system & adjustment access</p>
-          </div>
-          <span class="text-cyan-700 font-bold">&rarr;</span>
-        </button>
-
-        <button onclick="loginAs('storekeeper', 'store123')" class="w-full p-3 bg-slate-50 hover:bg-slate-100 rounded-xl border border-slate-200 flex items-center justify-between text-left transition">
-          <div>
-            <p class="font-bold text-slate-900">Storekeeper</p>
-            <p class="text-[10px] text-slate-500">Daily entry, usage, receiving, dilution</p>
-          </div>
-          <span class="text-cyan-700 font-bold">&rarr;</span>
-        </button>
-
-        <button onclick="loginAs('viewer', 'view123')" class="w-full p-3 bg-slate-50 hover:bg-slate-100 rounded-xl border border-slate-200 flex items-center justify-between text-left transition">
-          <div>
-            <p class="font-bold text-slate-900">Viewer</p>
-            <p class="text-[10px] text-slate-500">Read-only dashboards and reports</p>
-          </div>
-          <span class="text-cyan-700 font-bold">&rarr;</span>
-        </button>
-      </div>
-    </div>
-  </div>
-
   <!-- TOAST NOTIFICATION CONTAINER -->
   <div id="toast-container" class="fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none"></div>
 
-  <!-- Load Main Application Script -->
-  <script src="/static/js/app.js"></script>
+  <script>
+    /* ==========================================================================
+       DATA STATE ENGINE
+       ========================================================================== */
+
+    const CHEMICALS_MASTER = [
+      { name: "TMTD", code: "CHEM-TMTD", location: "Main Chemical Store", unit: "kg", reqDailyMorning: false, minStock: 200, desc: "Tetramethylthiuram Disulfide compound" },
+      { name: "Zinc Oxide", code: "CHEM-ZNO", location: "Main Chemical Store", unit: "kg", reqDailyMorning: false, minStock: 500, desc: "Vulcanization activator" },
+      { name: "Lauric Acid", code: "CHEM-LA", location: "Main Chemical Store", unit: "kg", reqDailyMorning: false, minStock: 150, desc: "Surfactant & stabilizer" },
+      { name: "DAHP", code: "CHEM-DAHP", location: "Main Chemical Store", unit: "kg", reqDailyMorning: false, minStock: 100, desc: "Diammonium hydrogen phosphate" },
+      { name: "25% Ammonia", code: "CHEM-AM25", location: "25% Ammonia Barrel Store", unit: "kg", reqDailyMorning: true, minStock: 660, desc: "Concentrated 25% Ammonia Barrels (220kg ea)" },
+      { name: "10% Ammonia", code: "CHEM-AM10", location: "10% Ammonia Store", unit: "kg", reqDailyMorning: true, minStock: 600, desc: "Diluted ready-to-use ammonia solution" },
+    ];
+
+    let ammoniaBarrels = [
+      { id: "BRL-2026-001", batchNo: "AM25-B001", origQty: 220, currentQty: 220, supplier: "Lanka Latex Supplies", dateRcv: "2026-09-10", expiryDate: "2027-03-10", location: "25% Ammonia Barrel Store", status: "Full" },
+      { id: "BRL-2026-002", batchNo: "AM25-B001", origQty: 220, currentQty: 220, supplier: "Lanka Latex Supplies", dateRcv: "2026-09-10", expiryDate: "2027-03-10", location: "25% Ammonia Barrel Store", status: "Full" },
+      { id: "BRL-2026-003", batchNo: "AM25-B001", origQty: 220, currentQty: 220, supplier: "Lanka Latex Supplies", dateRcv: "2026-09-10", expiryDate: "2027-03-10", location: "25% Ammonia Barrel Store", status: "Full" },
+      { id: "BRL-2026-004", batchNo: "AM25-B002", origQty: 220, currentQty: 220, supplier: "PetroChem Asia", dateRcv: "2026-09-18", expiryDate: "2027-04-18", location: "25% Ammonia Barrel Store", status: "Full" },
+      { id: "BRL-2026-005", batchNo: "AM25-B002", origQty: 220, currentQty: 220, supplier: "PetroChem Asia", dateRcv: "2026-09-18", expiryDate: "2027-04-18", location: "25% Ammonia Barrel Store", status: "Full" },
+      { id: "BRL-2026-006", batchNo: "AM25-B002", origQty: 220, currentQty: 220, supplier: "PetroChem Asia", dateRcv: "2026-09-18", expiryDate: "2027-04-18", location: "25% Ammonia Barrel Store", status: "Full" },
+    ];
+
+    let batchesLedger = [
+      { chemical: "25% Ammonia", batchNo: "AM25-B001", mfgDate: "2026-08-01", expiryDate: "2027-03-10", rcvDate: "2026-09-10", supplier: "Lanka Latex Supplies", location: "25% Ammonia Barrel Store", rcvQty: 660, currentQty: 660, unit: "kg", status: "Active" },
+      { chemical: "25% Ammonia", batchNo: "AM25-B002", mfgDate: "2026-08-15", expiryDate: "2027-04-18", rcvDate: "2026-09-18", supplier: "PetroChem Asia", location: "25% Ammonia Barrel Store", rcvQty: 660, currentQty: 660, unit: "kg", status: "Active" },
+      { chemical: "10% Ammonia", batchNo: "AM10-P101", mfgDate: "2026-09-20", expiryDate: "2027-03-20", rcvDate: "2026-09-20", supplier: "In-House Prep", location: "10% Ammonia Store", rcvQty: 605, currentQty: 605, unit: "kg", status: "Active" },
+      { chemical: "10% Ammonia", batchNo: "AM10-P102", mfgDate: "2026-09-25", expiryDate: "2027-03-25", rcvDate: "2026-09-25", supplier: "In-House Prep", location: "10% Ammonia Store", rcvQty: 605, currentQty: 605, unit: "kg", status: "Active" },
+      { chemical: "TMTD", batchNo: "TMTD-2026-A1", mfgDate: "2026-05-10", expiryDate: "2026-10-15", rcvDate: "2026-06-01", supplier: "Global Polymer Additives", location: "Main Chemical Store", rcvQty: 500, currentQty: 210, unit: "kg", status: "Expiring Soon" },
+      { chemical: "Zinc Oxide", batchNo: "ZNO-2026-99", mfgDate: "2026-01-10", expiryDate: "2027-12-31", rcvDate: "2026-02-01", supplier: "Lanka Chemicals Corp", location: "Main Chemical Store", rcvQty: 1000, currentQty: 740, unit: "kg", status: "Active" },
+      { chemical: "Lauric Acid", batchNo: "LA-2026-V1", mfgDate: "2026-03-12", expiryDate: "2027-06-30", rcvDate: "2026-04-05", supplier: "Oleochem Industries", location: "Main Chemical Store", rcvQty: 300, currentQty: 180, unit: "kg", status: "Active" },
+      { chemical: "DAHP", batchNo: "DAHP-2025-X", mfgDate: "2025-08-01", expiryDate: "2026-08-01", rcvDate: "2025-08-20", supplier: "AgroChem Supply", location: "Main Chemical Store", rcvQty: 250, currentQty: 45, unit: "kg", status: "Expired" },
+    ];
+
+    let readyToUse25Qty = 180.00;
+
+    let usageRecords = [
+      { date: "2026-09-28", time: "08:30 AM", chemical: "TMTD", batchNo: "TMTD-2026-A1", expiryDate: "2026-10-15", location: "Main Chemical Store", qtyUsed: 15.00, unit: "kg", purpose: "Compounding Line A", refNo: "USG-2026-81", remarks: "Standard dosage" },
+      { date: "2026-09-27", time: "14:15 PM", chemical: "Zinc Oxide", batchNo: "ZNO-2026-99", expiryDate: "2027-12-31", location: "Main Chemical Store", qtyUsed: 25.00, unit: "kg", purpose: "Vulcanization Batch 12", refNo: "USG-2026-80", remarks: "Regular run" },
+      { date: "2026-09-26", time: "10:00 AM", chemical: "10% Ammonia", batchNo: "AM10-P101", expiryDate: "2027-03-20", location: "10% Ammonia Store", qtyUsed: 50.00, unit: "kg", purpose: "Latex Centrifuging", refNo: "USG-2026-79", remarks: "Pre-stabilization" },
+    ];
+
+    let receivingRecords = [
+      { dateRcv: "2026-09-18", grnNo: "GRN-2026-44", chemical: "25% Ammonia", batchNo: "AM25-B002", mfgDate: "2026-08-15", expDate: "2027-04-18", supplier: "PetroChem Asia", qty: 660, unit: "kg", location: "25% Ammonia Barrel Store" },
+      { dateRcv: "2026-09-10", grnNo: "GRN-2026-38", chemical: "25% Ammonia", batchNo: "AM25-B001", mfgDate: "2026-08-01", expDate: "2027-03-10", supplier: "Lanka Latex Supplies", qty: 660, unit: "kg", location: "25% Ammonia Barrel Store" },
+      { dateRcv: "2026-06-01", grnNo: "GRN-2026-12", chemical: "TMTD", batchNo: "TMTD-2026-A1", mfgDate: "2026-05-10", expDate: "2026-10-15", supplier: "Global Polymer Additives", qty: 500, unit: "kg", location: "Main Chemical Store" },
+    ];
+
+    let barrelHistoryLog = [
+      { barrelId: "BRL-2026-000 (Prev)", batchNo: "AM25-B000", actionDate: "2026-09-25 09:00", origQty: 220, usedQty: 220, remQty: 0, purpose: "10% Ammonia Preparation", customerSupplier: "—", refNo: "PREP-2026-108" },
+    ];
+
+    let transferRecords = [
+      { date: "2026-09-27", chemical: "25% Ammonia", batchNo: "AM25-B001", source: "25% Ammonia Barrel Store", dest: "Ready-to-Use 25% Ammonia Store", qty: 180, refNo: "TRF-2026-12", remarks: "Unsealed Barrel BRL-2026-000 for Ready Dispensing" },
+    ];
+
+    let dailyMorningHistory = [
+      { dateTime: "2026-09-28 07:45 AM", store: "25% Ammonia Barrel Store", sysQty: "6 Barrels (1320 kg)", physQty: "6 Barrels", variance: "0 Barrels", remarks: "Seals verified ok", inspector: "Samitha K." },
+      { dateTime: "2026-09-28 07:45 AM", store: "Ready-to-Use 25% Store", sysQty: "180.00 kg", physQty: "180.00 kg", variance: "0.00 kg", remarks: "Level confirmed", inspector: "Samitha K." },
+      { dateTime: "2026-09-28 07:45 AM", store: "10% Ammonia Store", sysQty: "1210.00 kg", physQty: "1210.00 kg", variance: "0.00 kg", remarks: "Tanks inspected", inspector: "Samitha K." },
+    ];
+
+    let masterAuditLog = [
+      { timestamp: "2026-09-28 08:30 AM", type: "Usage", chemical: "TMTD", batchOrBarrel: "TMTD-2026-A1", qty: "15.00 kg", purpose: "Compounding Line A", supplierCustomer: "Internal", refNo: "USG-2026-81" },
+      { timestamp: "2026-09-28 07:45 AM", type: "Verification", chemical: "Ammonia Stores", batchOrBarrel: "All Stores", qty: "—", purpose: "Morning Physical Stock Check", supplierCustomer: "Internal", refNo: "VERIF-0928" },
+      { timestamp: "2026-09-27 14:15 PM", type: "Usage", chemical: "Zinc Oxide", batchOrBarrel: "ZNO-2026-99", qty: "25.00 kg", purpose: "Vulcanization Batch 12", supplierCustomer: "Internal", refNo: "USG-2026-80" },
+      { timestamp: "2026-09-25 09:00 AM", type: "Preparation", chemical: "10% Ammonia", batchOrBarrel: "Src: AM25-B000", qty: "605.00 kg Produced", purpose: "10% Ammonia Preparation", supplierCustomer: "Internal", refNo: "PREP-2026-108" },
+    ];
+
+    /* ==========================================================================
+       INITIALIZATION & EVENT LISTENERS
+       ========================================================================== */
+    window.onload = function() {
+      updateLiveClocks();
+      setInterval(updateLiveClocks, 1000);
+      
+      const today = new Date().toISOString().split('T')[0];
+      if(document.getElementById('daily-date')) document.getElementById('daily-date').value = today;
+      if(document.getElementById('daily-time')) document.getElementById('daily-time').value = "07:45";
+      if(document.getElementById('usage-date')) document.getElementById('usage-date').value = today;
+      if(document.getElementById('rcv-mfg-date')) document.getElementById('rcv-mfg-date').value = today;
+      if(document.getElementById('rcv-exp-date')) document.getElementById('rcv-exp-date').value = "2027-09-28";
+
+      renderDashboard();
+      renderBarrelsGrid();
+      renderBatchesTable();
+      renderUsageTable();
+      renderReceivingTable();
+      renderAmmonia10Table();
+      renderTransfersTable();
+      renderChemicalsMasterGrid();
+      renderDailyHistoryTable();
+      renderMasterAuditHistory();
+      renderAlertsList();
+      populatePrepBarrelSelect();
+
+      if(window.lucide) lucide.createIcons();
+    };
+
+    function updateLiveClocks() {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('en-US', { hour12: true });
+      const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      if(document.getElementById('live-clock-time')) document.getElementById('live-clock-time').textContent = timeStr;
+      if(document.getElementById('live-clock-date')) document.getElementById('live-clock-date').textContent = dateStr;
+    }
+
+    /* ==========================================================================
+       TAB CONTROLLER
+       ========================================================================== */
+    function switchTab(tabId) {
+      document.querySelectorAll('.view-panel').forEach(el => el.classList.add('hidden'));
+      
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('bg-slate-100', 'text-cyan-700', 'font-bold');
+      });
+
+      const targetView = document.getElementById('view-' + tabId);
+      if(targetView) {
+        targetView.classList.remove('hidden');
+      }
+
+      const activeNavBtn = document.getElementById('nav-' + tabId);
+      if(activeNavBtn) {
+        activeNavBtn.classList.add('bg-slate-100', 'text-cyan-700', 'font-bold');
+      }
+
+      const titleMap = {
+        'dashboard': 'Dashboard',
+        'daily-entry': 'Daily Morning Physical Entry',
+        'usage': 'Chemical Usage Ledger',
+        'receiving': 'Chemical Receiving (GRN)',
+        'ammonia-barrels': '25% Ammonia Barrel Stock',
+        'ammonia-ready': 'Ready-to-Use 25% Ammonia Store',
+        'ammonia-10-stock': '10% Ammonia Diluted Stock',
+        'ammonia-prep': '10% Ammonia Preparation (Fixed Ratio)',
+        'transfers': 'Location Stock Transfers',
+        'chemicals': 'Chemicals Inventory Master',
+        'batches': 'Batch & Expiry Management',
+        'reports': 'Reports & Analytics',
+        'history': 'Historical Audit Traceability Log',
+        'alerts': 'Stock & Expiry Alerts Center',
+        'settings': 'System Settings & Users'
+      };
+      document.getElementById('current-page-title').textContent = titleMap[tabId] || 'Chemical Store Pro';
+
+      if(tabId === 'reports') renderReportView('daily');
+      if(window.lucide) lucide.createIcons();
+    }
+
+    /* ==========================================================================
+       RENDER FUNCTIONS
+       ========================================================================== */
+    function renderDashboard() {
+      const fullBarrels = ammoniaBarrels.filter(b => b.currentQty >= 220).length;
+      const totalBarrelKg = ammoniaBarrels.reduce((sum, b) => sum + b.currentQty, 0);
+      
+      const total10Kg = batchesLedger
+        .filter(b => b.chemical === "10% Ammonia")
+        .reduce((sum, b) => sum + b.currentQty, 0);
+
+      document.getElementById('dash-kpi-barrels').textContent = \`\${fullBarrels} Barrels\`;
+      document.getElementById('dash-kpi-barrel-kg').textContent = \`\${totalBarrelKg.toLocaleString()} kg\`;
+      document.getElementById('dash-kpi-10-stock').textContent = \`\${total10Kg.toLocaleString('en-US', {minimumFractionDigits:1})} kg\`;
+
+      document.getElementById('snap-barrel-count').textContent = \`\${fullBarrels} Full Barrels\`;
+      document.getElementById('snap-barrel-weight').textContent = \`\${totalBarrelKg.toLocaleString()} kg\`;
+      document.getElementById('snap-ready-qty').textContent = \`\${readyToUse25Qty.toFixed(2)} kg\`;
+      document.getElementById('snap-10-qty').textContent = \`\${total10Kg.toLocaleString('en-US', {minimumFractionDigits:2})} kg\`;
+
+      document.getElementById('sys-qty-barrel').textContent = \`\${fullBarrels} Barrels (\${totalBarrelKg} kg)\`;
+      document.getElementById('sys-qty-ready').textContent = \`\${readyToUse25Qty.toFixed(2)} kg\`;
+      document.getElementById('sys-qty-10').textContent = \`\${total10Kg.toFixed(2)} kg\`;
+
+      const dashUsageTbody = document.getElementById('dash-table-usage');
+      dashUsageTbody.innerHTML = usageRecords.slice(0, 4).map(u => \`
+        <tr>
+          <td class="p-2.5 font-mono text-[11px] text-slate-500">\${u.date} <span class="text-slate-400">\${u.time}</span></td>
+          <td class="p-2.5 font-bold text-slate-900">\${u.chemical}</td>
+          <td class="p-2.5 font-mono text-cyan-700 font-bold">\${u.batchNo}</td>
+          <td class="p-2.5 text-right font-mono font-bold text-rose-600">-\${u.qtyUsed.toFixed(2)} \${u.unit}</td>
+          <td class="p-2.5 text-slate-700 truncate max-w-[150px]">\${u.purpose}</td>
+        </tr>
+      \`).join('');
+
+      const dashBarrelTbody = document.getElementById('dash-table-barrel-history');
+      dashBarrelTbody.innerHTML = barrelHistoryLog.slice(0, 4).map(b => \`
+        <tr>
+          <td class="p-2.5 font-mono font-bold text-amber-700">\${b.barrelId}</td>
+          <td class="p-2.5 font-mono text-slate-700">\${b.batchNo}</td>
+          <td class="p-2.5 font-mono text-[11px] text-slate-500">\${b.actionDate}</td>
+          <td class="p-2.5 text-right font-mono font-bold text-rose-600">-\${b.usedQty} kg</td>
+          <td class="p-2.5 text-slate-700">\${b.purpose}</td>
+          <td class="p-2.5 text-slate-500">\${b.customerSupplier}</td>
+        </tr>
+      \`).join('');
+
+      document.getElementById('dash-morning-summary').innerHTML = \`
+        <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 flex justify-between items-center text-xs">
+          <div>
+            <span class="text-slate-800 font-bold block">25% Barrel Store</span>
+            <span class="text-[10px] text-slate-500 font-mono">Status: Verified 0 Variance</span>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold border border-emerald-200">Match</span>
+        </div>
+        <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 flex justify-between items-center text-xs">
+          <div>
+            <span class="text-slate-800 font-bold block">Ready 25% Store</span>
+            <span class="text-[10px] text-slate-500 font-mono">\${readyToUse25Qty.toFixed(2)} kg</span>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold border border-emerald-200">Match</span>
+        </div>
+        <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 flex justify-between items-center text-xs">
+          <div>
+            <span class="text-slate-800 font-bold block">10% Ammonia Store</span>
+            <span class="text-[10px] text-slate-500 font-mono">\${total10Kg.toFixed(2)} kg</span>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold border border-emerald-200">Match</span>
+        </div>
+      \`;
+    }
+
+    function renderBarrelsGrid() {
+      const grid = document.getElementById('barrel-cards-grid');
+      grid.innerHTML = ammoniaBarrels.map(b => {
+        const percent = Math.round((b.currentQty / b.origQty) * 100);
+        return \`
+          <div class="glass-card p-4 rounded-xl border border-slate-200 space-y-3 relative overflow-hidden">
+            <div class="flex justify-between items-start">
+              <div>
+                <span class="text-[10px] font-mono text-amber-700 font-bold uppercase tracking-wider block">\${b.id}</span>
+                <h4 class="font-bold text-sm text-slate-900 font-mono mt-0.5">\${b.batchNo}</h4>
+              </div>
+              <span class="px-2 py-0.5 text-[10px] rounded font-bold \${b.currentQty === 220 ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-amber-100 text-amber-800 border border-amber-200'}">
+                \${b.status}
+              </span>
+            </div>
+
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs font-mono">
+                <span class="text-slate-500">Current Level:</span>
+                <span class="text-slate-900 font-bold">\${b.currentQty.toFixed(2)} / \${b.origQty} kg</span>
+              </div>
+              <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden border border-slate-200">
+                <div class="bg-amber-500 h-full transition-all duration-500" style="width: \${percent}%"></div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 text-[10px] text-slate-500 border-t border-slate-200 pt-2 font-mono">
+              <div>Supplier: <span class="text-slate-800 block truncate font-sans font-medium">\${b.supplier}</span></div>
+              <div>Expiry: <span class="text-slate-800 block font-sans font-medium">\${b.expiryDate}</span></div>
+            </div>
+
+            <div class="pt-1 flex justify-end">
+              <button onclick="openBarrelModalWithId('\${b.id}')" class="px-3 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 rounded text-xs font-bold flex items-center gap-1 transition">
+                <i data-lucide="edit-2" class="w-3 h-3"></i> Use / Transfer
+              </button>
+            </div>
+          </div>
+        \`;
+      }).join('');
+
+      const bHistoryTbody = document.getElementById('barrel-history-tbody');
+      bHistoryTbody.innerHTML = barrelHistoryLog.map(bh => \`
+        <tr>
+          <td class="p-2.5 font-mono text-[11px] text-slate-500">\${bh.actionDate}</td>
+          <td class="p-2.5 font-mono font-bold text-amber-700">\${bh.barrelId}</td>
+          <td class="p-2.5 font-mono text-slate-800 font-medium">\${bh.batchNo}</td>
+          <td class="p-2.5 text-right font-mono text-slate-600">\${bh.origQty} kg</td>
+          <td class="p-2.5 text-right font-mono font-bold text-rose-600">-\${bh.usedQty} kg</td>
+          <td class="p-2.5 text-right font-mono font-bold text-emerald-700">\${bh.remQty} kg</td>
+          <td class="p-2.5 text-slate-800">\${bh.purpose}</td>
+          <td class="p-2.5 text-slate-500">\${bh.customerSupplier}</td>
+          <td class="p-2.5 font-mono text-slate-500">\${bh.refNo}</td>
+        </tr>
+      \`).join('');
+
+      document.getElementById('badge-barrel-count').textContent = \`\${ammoniaBarrels.filter(b => b.currentQty > 0).length} Barrels\`;
+      if(window.lucide) lucide.createIcons();
+    }
+
+    function openBarrelModalWithId(barrelId) {
+      populateBarrelSelectInModal();
+      const sel = document.getElementById('bu-select-barrel');
+      if(sel) sel.value = barrelId;
+      updateBarrelModalMeta();
+      openModal('modal-barrel-usage');
+    }
+
+    function populateBarrelSelectInModal() {
+      const sel = document.getElementById('bu-select-barrel');
+      sel.innerHTML = ammoniaBarrels
+        .filter(b => b.currentQty > 0)
+        .map(b => \`<option value="\${b.id}">\${b.id} | Batch: \${b.batchNo} (\${b.currentQty} kg available)</option>\`)
+        .join('');
+    }
+
+    function updateBarrelModalMeta() {
+      const selectedId = document.getElementById('bu-select-barrel').value;
+      const barrel = ammoniaBarrels.find(b => b.id === selectedId);
+      if(barrel) {
+        document.getElementById('bu-orig-qty').value = \`\${barrel.origQty.toFixed(2)} kg\`;
+        document.getElementById('bu-curr-qty').value = \`\${barrel.currentQty.toFixed(2)} kg\`;
+        document.getElementById('bu-used-qty').value = barrel.currentQty;
+        calcBarrelRemaining();
+      }
+    }
+
+    function calcBarrelRemaining() {
+      const selectedId = document.getElementById('bu-select-barrel').value;
+      const barrel = ammoniaBarrels.find(b => b.id === selectedId);
+      const usedInput = parseFloat(document.getElementById('bu-used-qty').value) || 0;
+      if(barrel) {
+        const rem = Math.max(0, barrel.currentQty - usedInput);
+        document.getElementById('bu-rem-qty').value = \`\${rem.toFixed(2)} kg\`;
+      }
+    }
+
+    function toggleCustomerSupplierField() {
+      const purpose = document.getElementById('bu-purpose').value;
+      const wrapper = document.getElementById('bu-customer-wrapper');
+      if(purpose === 'Latex Supplier / Customer Supply') {
+        wrapper.classList.remove('hidden');
+      } else {
+        wrapper.classList.add('hidden');
+      }
+    }
+
+    function handleBarrelUsageSubmit(e) {
+      e.preventDefault();
+      const barrelId = document.getElementById('bu-select-barrel').value;
+      const barrel = ammoniaBarrels.find(b => b.id === barrelId);
+      const usedQty = parseFloat(document.getElementById('bu-used-qty').value);
+      const purpose = document.getElementById('bu-purpose').value;
+      const customer = document.getElementById('bu-customer').value || "—";
+      const refNo = document.getElementById('bu-ref').value;
+
+      if(!barrel || usedQty <= 0) {
+        showToast("Please enter a valid quantity", "error");
+        return;
+      }
+
+      if(usedQty > barrel.currentQty) {
+        showToast(\`Cannot consume more than available (\${barrel.currentQty} kg)\`, "error");
+        return;
+      }
+
+      barrel.currentQty -= usedQty;
+      if(barrel.currentQty === 0) barrel.status = "Empty / Consumed";
+      else barrel.status = "Partial";
+
+      const mBatch = batchesLedger.find(b => b.batchNo === barrel.batchNo && b.chemical === "25% Ammonia");
+      if(mBatch) {
+        mBatch.currentQty = Math.max(0, mBatch.currentQty - usedQty);
+      }
+
+      if(purpose === 'Transfer to Ready-to-Use 25% Ammonia Store') {
+        readyToUse25Qty += usedQty;
+        transferRecords.unshift({
+          date: new Date().toISOString().split('T')[0],
+          chemical: "25% Ammonia",
+          batchNo: barrel.batchNo,
+          source: "25% Ammonia Barrel Store",
+          dest: "Ready-to-Use 25% Ammonia Store",
+          qty: usedQty,
+          refNo: refNo,
+          remarks: \`Transferred from Barrel \${barrel.id}\`
+        });
+      }
+
+      const nowStr = new Date().toISOString().replace('T', ' ').substring(0, 16);
+      barrelHistoryLog.unshift({
+        barrelId: barrel.id,
+        batchNo: barrel.batchNo,
+        actionDate: nowStr,
+        origQty: barrel.origQty,
+        usedQty: usedQty,
+        remQty: barrel.currentQty,
+        purpose: purpose,
+        customerSupplier: customer,
+        refNo: refNo
+      });
+
+      masterAuditLog.unshift({
+        timestamp: nowStr,
+        type: "Barrel Update",
+        chemical: "25% Ammonia",
+        batchOrBarrel: barrel.id,
+        qty: \`-\${usedQty} kg\`,
+        purpose: purpose,
+        supplierCustomer: customer,
+        refNo: refNo
+      });
+
+      closeModal('modal-barrel-usage');
+      renderDashboard();
+      renderBarrelsGrid();
+      renderBatchesTable();
+      renderTransfersTable();
+      renderMasterAuditHistory();
+      populatePrepBarrelSelect();
+      showToast(\`Barrel \${barrel.id} updated successfully!\`, "success");
+    }
+
+    function populatePrepBarrelSelect() {
+      const sel = document.getElementById('prep-select-barrel');
+      if(!sel) return;
+      
+      const availableBarrels = ammoniaBarrels.filter(b => b.currentQty >= 220);
+      if(availableBarrels.length === 0) {
+        sel.innerHTML = \`<option value="">⚠️ Insufficient Stock: No full 220 kg barrel available!</option>\`;
+      } else {
+        sel.innerHTML = availableBarrels.map(b => 
+          \`<option value="\${b.id}">\${b.id} | Batch: \${b.batchNo} (Available: \${b.currentQty} kg) [Full Barrel Ready]</option>\`
+        ).join('');
+      }
+    }
+
+    function handlePrepSubmit(e) {
+      e.preventDefault();
+      const selectedBarrelId = document.getElementById('prep-select-barrel').value;
+      const barrel = ammoniaBarrels.find(b => b.id === selectedBarrelId);
+
+      if(!barrel || barrel.currentQty < 220) {
+        showModalAlert(
+          "Insufficient 25% Ammonia Stock",
+          "Insufficient 25% Ammonia stock. A complete 220 kg barrel is required for 10% Ammonia preparation."
+        );
+        return;
+      }
+
+      const operator = document.getElementById('prep-operator').value;
+      const refNo = document.getElementById('prep-ref').value;
+
+      const USED_25_KG = 220.00;
+      const WATER_ADDED_KG = 385.00;
+      const PRODUCED_10_KG = 605.00;
+
+      barrel.currentQty -= USED_25_KG;
+      barrel.status = "Empty / Consumed";
+
+      const m25Batch = batchesLedger.find(b => b.batchNo === barrel.batchNo && b.chemical === "25% Ammonia");
+      if(m25Batch) {
+        m25Batch.currentQty = Math.max(0, m25Batch.currentQty - USED_25_KG);
+      }
+
+      const todayStr = new Date().toISOString().split('T')[0];
+      const new10BatchNo = \`AM10-P\${Math.floor(100 + Math.random() * 900)}\`;
+      
+      const expDate = new Date();
+      expDate.setMonth(expDate.getMonth() + 6);
+      const expStr = expDate.toISOString().split('T')[0];
+
+      batchesLedger.unshift({
+        chemical: "10% Ammonia",
+        batchNo: new10BatchNo,
+        mfgDate: todayStr,
+        expiryDate: expStr,
+        rcvDate: todayStr,
+        supplier: \`In-House Prep (Src: \${barrel.batchNo})\`,
+        location: "10% Ammonia Store",
+        rcvQty: PRODUCED_10_KG,
+        currentQty: PRODUCED_10_KG,
+        unit: "kg",
+        status: "Active"
+      });
+
+      const nowStr = new Date().toISOString().replace('T', ' ').substring(0, 16);
+      barrelHistoryLog.unshift({
+        barrelId: barrel.id,
+        batchNo: barrel.batchNo,
+        actionDate: nowStr,
+        origQty: barrel.origQty,
+        usedQty: USED_25_KG,
+        remQty: barrel.currentQty,
+        purpose: "10% Ammonia Preparation",
+        customerSupplier: "—",
+        refNo: refNo
+      });
+
+      masterAuditLog.unshift({
+        timestamp: nowStr,
+        type: "Preparation",
+        chemical: "10% Ammonia",
+        batchOrBarrel: \`\${new10BatchNo} (Src: \${barrel.id})\`,
+        qty: \`+\${PRODUCED_10_KG} kg\`,
+        purpose: \`10% Ammonia Prep (\${USED_25_KG}kg 25% + \${WATER_ADDED_KG}kg H2O)\`,
+        supplierCustomer: operator,
+        refNo: refNo
+      });
+
+      renderDashboard();
+      renderBarrelsGrid();
+      renderBatchesTable();
+      renderAmmonia10Table();
+      renderMasterAuditHistory();
+      populatePrepBarrelSelect();
+
+      showToast(\`Success! Prepared 605.00 kg of 10% Ammonia (Batch \${new10BatchNo})\`, "success");
+      switchTab('ammonia-10-stock');
+    }
+
+    function calcDailyVariance() {
+      const fullBarrels = ammoniaBarrels.filter(b => b.currentQty >= 220).length;
+      const total10Kg = batchesLedger.filter(b => b.chemical === "10% Ammonia").reduce((sum, b) => sum + b.currentQty, 0);
+
+      const physBarrel = parseFloat(document.getElementById('phys-qty-barrel').value) || 0;
+      const physReady = parseFloat(document.getElementById('phys-qty-ready').value) || 0;
+      const phys10 = parseFloat(document.getElementById('phys-qty-10').value) || 0;
+
+      const varBarrel = physBarrel - fullBarrels;
+      const varReady = physReady - readyToUse25Qty;
+      const var10 = phys10 - total10Kg;
+
+      const formatVar = (val, unit) => {
+        if(val === 0) return \`<span class="text-emerald-700 font-bold">0 \${unit}</span>\`;
+        if(val > 0) return \`<span class="text-cyan-700 font-bold">+\${val.toFixed(2)} \${unit}</span>\`;
+        return \`<span class="text-rose-600 font-bold">\${val.toFixed(2)} \${unit}</span>\`;
+      };
+
+      document.getElementById('var-barrel').innerHTML = formatVar(varBarrel, 'Barrels');
+      document.getElementById('var-ready').innerHTML = formatVar(varReady, 'kg');
+      document.getElementById('var-10').innerHTML = formatVar(var10, 'kg');
+    }
+
+    function handleDailyStockSubmit(e) {
+      e.preventDefault();
+      const date = document.getElementById('daily-date').value;
+      const time = document.getElementById('daily-time').value;
+      const inspector = "Samitha K.";
+
+      const fullBarrels = ammoniaBarrels.filter(b => b.currentQty >= 220).length;
+      const total10Kg = batchesLedger.filter(b => b.chemical === "10% Ammonia").reduce((sum, b) => sum + b.currentQty, 0);
+
+      const pBarrel = document.getElementById('phys-qty-barrel').value;
+      const pReady = document.getElementById('phys-qty-ready').value;
+      const p10 = document.getElementById('phys-qty-10').value;
+
+      const rBarrel = document.getElementById('rem-barrel').value || "Routine verification";
+      const rReady = document.getElementById('rem-ready').value || "Routine verification";
+      const r10 = document.getElementById('rem-10').value || "Routine verification";
+
+      const dt = \`\${date} \${time}\`;
+
+      dailyMorningHistory.unshift(
+        { dateTime: dt, store: "25% Ammonia Barrel Store", sysQty: \`\${fullBarrels} Barrels\`, physQty: \`\${pBarrel} Barrels\`, variance: \`\${pBarrel - fullBarrels} Barrels\`, remarks: rBarrel, inspector: inspector },
+        { dateTime: dt, store: "Ready-to-Use 25% Store", sysQty: \`\${readyToUse25Qty.toFixed(2)} kg\`, physQty: \`\${parseFloat(pReady).toFixed(2)} kg\`, variance: \`\${(pReady - readyToUse25Qty).toFixed(2)} kg\`, remarks: rReady, inspector: inspector },
+        { dateTime: dt, store: "10% Ammonia Store", sysQty: \`\${total10Kg.toFixed(2)} kg\`, physQty: \`\${parseFloat(p10).toFixed(2)} kg\`, variance: \`\${(p10 - total10Kg).toFixed(2)} kg\`, remarks: r10, inspector: inspector }
+      );
+
+      renderDailyHistoryTable();
+      renderDashboard();
+      showToast("Daily Morning Physical Stock logged successfully!", "success");
+    }
+
+    function renderDailyHistoryTable() {
+      const tbody = document.getElementById('daily-history-tbody');
+      tbody.innerHTML = dailyMorningHistory.map(d => \`
+        <tr>
+          <td class="p-2.5 font-mono text-[11px] text-slate-500">\${d.dateTime}</td>
+          <td class="p-2.5 font-bold text-slate-900">\${d.store}</td>
+          <td class="p-2.5 text-right font-mono text-slate-700">\${d.sysQty}</td>
+          <td class="p-2.5 text-right font-mono font-bold text-cyan-700">\${d.physQty}</td>
+          <td class="p-2.5 text-right font-mono font-bold \${d.variance.includes('-') ? 'text-rose-600' : 'text-emerald-700'}">\${d.variance}</td>
+          <td class="p-2.5 text-slate-700">\${d.remarks}</td>
+          <td class="p-2.5 text-slate-500">\${d.inspector}</td>
+        </tr>
+      \`).join('');
+    }
+
+    function populateUsageBatches() {
+      const chem = document.getElementById('usage-chem-select').value;
+      const sel = document.getElementById('usage-batch-select');
+      const filtered = batchesLedger.filter(b => b.chemical === chem && b.currentQty > 0);
+
+      if(filtered.length === 0) {
+        sel.innerHTML = \`<option value="">No active stock for \${chem}</option>\`;
+      } else {
+        sel.innerHTML = filtered.map(b => \`<option value="\${b.batchNo}">\${b.batchNo} (\${b.currentQty} kg available - Loc: \${b.location})</option>\`).join('');
+      }
+      updateUsageBatchMeta();
+    }
+
+    function updateUsageBatchMeta() {
+      const batchNo = document.getElementById('usage-batch-select').value;
+      const b = batchesLedger.find(item => item.batchNo === batchNo);
+      if(b) {
+        document.getElementById('usage-expiry-meta').value = b.expiryDate;
+        document.getElementById('usage-location').value = b.location;
+        document.getElementById('usage-unit').value = b.unit;
+      }
+    }
+
+    function handleUsageSubmit(e) {
+      e.preventDefault();
+      const chem = document.getElementById('usage-chem-select').value;
+      const batchNo = document.getElementById('usage-batch-select').value;
+      const qtyUsed = parseFloat(document.getElementById('usage-qty').value);
+      const purpose = document.getElementById('usage-purpose').value;
+      const refNo = document.getElementById('usage-ref').value;
+      const date = document.getElementById('usage-date').value;
+      const remarks = document.getElementById('usage-remarks').value || "Normal production usage";
+
+      const batch = batchesLedger.find(b => b.batchNo === batchNo && b.chemical === chem);
+      if(!batch || qtyUsed <= 0) {
+        showToast("Invalid chemical batch selection or quantity", "error");
+        return;
+      }
+
+      if(qtyUsed > batch.currentQty) {
+        showToast(\`Cannot consume more than available batch stock (\${batch.currentQty} kg)\`, "error");
+        return;
+      }
+
+      batch.currentQty -= qtyUsed;
+
+      const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      usageRecords.unshift({
+        date: date,
+        time: timeStr,
+        chemical: chem,
+        batchNo: batchNo,
+        expiryDate: batch.expiryDate,
+        location: batch.location,
+        qtyUsed: qtyUsed,
+        unit: batch.unit,
+        purpose: purpose,
+        refNo: refNo,
+        remarks: remarks
+      });
+
+      masterAuditLog.unshift({
+        timestamp: \`\${date} \${timeStr}\`,
+        type: "Usage",
+        chemical: chem,
+        batchOrBarrel: batchNo,
+        qty: \`-\${qtyUsed} \${batch.unit}\`,
+        purpose: purpose,
+        supplierCustomer: "Internal Production",
+        refNo: refNo
+      });
+
+      closeModal('modal-usage');
+      renderDashboard();
+      renderUsageTable();
+      renderBatchesTable();
+      renderMasterAuditHistory();
+      showToast(\`Usage logged: \${qtyUsed} \${batch.unit} of \${chem}\`, "success");
+    }
+
+    function renderUsageTable() {
+      const tbody = document.getElementById('usage-table-tbody');
+      tbody.innerHTML = usageRecords.map(u => \`
+        <tr>
+          <td class="p-3 font-mono text-slate-500">\${u.date} <span class="text-slate-400 text-[10px]">\${u.time}</span></td>
+          <td class="p-3 font-bold text-slate-900">\${u.chemical}</td>
+          <td class="p-3 font-mono text-cyan-700 font-bold">\${u.batchNo}</td>
+          <td class="p-3 font-mono text-slate-700">\${u.expiryDate}</td>
+          <td class="p-3 text-slate-600">\${u.location}</td>
+          <td class="p-3 text-right font-mono font-bold text-rose-600">-\${u.qtyUsed.toFixed(2)} \${u.unit}</td>
+          <td class="p-3 text-slate-800">\${u.purpose}</td>
+          <td class="p-3 font-mono text-slate-500">\${u.refNo}</td>
+          <td class="p-3 text-slate-500">\${u.remarks}</td>
+        </tr>
+      \`).join('');
+    }
+
+    function filterUsageTable() {
+      const query = document.getElementById('usage-search').value.toLowerCase();
+      const chemFilter = document.getElementById('usage-chem-filter').value;
+      const rows = document.querySelectorAll('#usage-table-tbody tr');
+
+      rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        const chemCell = row.children[1].innerText;
+        const matchesQuery = text.includes(query);
+        const matchesChem = chemFilter === "" || chemCell === chemFilter;
+
+        if(matchesQuery && matchesChem) row.style.display = "";
+        else row.style.display = "none";
+      });
+    }
+
+    function toggleReceivingBarrelNotice() {
+      const chem = document.getElementById('rcv-chem').value;
+      const notice = document.getElementById('rcv-barrel-notice');
+      if(chem === '25% Ammonia') notice.classList.remove('hidden');
+      else notice.classList.add('hidden');
+    }
+
+    function handleReceivingSubmit(e) {
+      e.preventDefault();
+      const chem = document.getElementById('rcv-chem').value;
+      const batchNo = document.getElementById('rcv-batch').value;
+      const grn = document.getElementById('rcv-grn').value;
+      const qty = parseFloat(document.getElementById('rcv-qty').value);
+      const unit = document.getElementById('rcv-unit').value;
+      const mfg = document.getElementById('rcv-mfg-date').value;
+      const exp = document.getElementById('rcv-exp-date').value;
+      const supplier = document.getElementById('rcv-supplier').value;
+      const location = document.getElementById('rcv-location').value;
+      const today = new Date().toISOString().split('T')[0];
+
+      batchesLedger.unshift({
+        chemical: chem,
+        batchNo: batchNo,
+        mfgDate: mfg,
+        expiryDate: exp,
+        rcvDate: today,
+        supplier: supplier,
+        location: location,
+        rcvQty: qty,
+        currentQty: qty,
+        unit: unit,
+        status: "Active"
+      });
+
+      receivingRecords.unshift({
+        dateRcv: today,
+        grnNo: grn,
+        chemical: chem,
+        batchNo: batchNo,
+        mfgDate: mfg,
+        expDate: exp,
+        supplier: supplier,
+        qty: qty,
+        unit: unit,
+        location: location
+      });
+
+      if(chem === '25% Ammonia') {
+        const barrelCount = Math.floor(qty / 220);
+        for(let i = 1; i <= barrelCount; i++) {
+          const newId = \`BRL-2026-00\${ammoniaBarrels.length + 1}\`;
+          ammoniaBarrels.push({
+            id: newId,
+            batchNo: batchNo,
+            origQty: 220,
+            currentQty: 220,
+            supplier: supplier,
+            dateRcv: today,
+            expiryDate: exp,
+            location: location,
+            status: "Full"
+          });
+        }
+      }
+
+      masterAuditLog.unshift({
+        timestamp: \`\${today} \${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}\`,
+        type: "Receiving",
+        chemical: chem,
+        batchOrBarrel: batchNo,
+        qty: \`+\${qty} \${unit}\`,
+        purpose: \`GRN Receiving (\${grn})\`,
+        supplierCustomer: supplier,
+        refNo: grn
+      });
+
+      closeModal('modal-receiving');
+      renderDashboard();
+      renderReceivingTable();
+      renderBatchesTable();
+      renderBarrelsGrid();
+      renderMasterAuditHistory();
+      populatePrepBarrelSelect();
+      showToast(\`Shipment GRN \${grn} recorded successfully!\`, "success");
+    }
+
+    function renderReceivingTable() {
+      const tbody = document.getElementById('receiving-table-tbody');
+      tbody.innerHTML = receivingRecords.map(r => \`
+        <tr>
+          <td class="p-3 font-mono text-slate-500">\${r.dateRcv}</td>
+          <td class="p-3 font-mono font-bold text-blue-700">\${r.grnNo}</td>
+          <td class="p-3 font-bold text-slate-900">\${r.chemical}</td>
+          <td class="p-3 font-mono text-cyan-700 font-bold">\${r.batchNo}</td>
+          <td class="p-3 font-mono text-slate-500">\${r.mfgDate}</td>
+          <td class="p-3 font-mono text-slate-500">\${r.expDate}</td>
+          <td class="p-3 text-slate-800">\${r.supplier}</td>
+          <td class="p-3 text-right font-mono font-bold text-emerald-700">+\${r.qty} \${r.unit}</td>
+          <td class="p-3 text-slate-600">\${r.location}</td>
+        </tr>
+      \`).join('');
+    }
+
+    function renderBatchesTable() {
+      const tbody = document.getElementById('batches-tbody');
+      tbody.innerHTML = batchesLedger.map(b => {
+        let badgeClass = "bg-emerald-100 text-emerald-800 border-emerald-200";
+        if(b.status === "Expiring Soon") badgeClass = "bg-amber-100 text-amber-800 border-amber-200";
+        if(b.status === "Expired") badgeClass = "bg-rose-100 text-rose-800 border-rose-200";
+
+        return \`
+          <tr>
+            <td class="p-3 font-bold text-slate-900">\${b.chemical}</td>
+            <td class="p-3 font-mono text-cyan-700 font-bold">\${b.batchNo}</td>
+            <td class="p-3 font-mono text-slate-500">\${b.mfgDate}</td>
+            <td class="p-3 font-mono font-semibold \${b.status === 'Expiring Soon' ? 'text-amber-700' : b.status === 'Expired' ? 'text-rose-600' : 'text-slate-700'}">\${b.expiryDate}</td>
+            <td class="p-3 text-slate-800">\${b.supplier}</td>
+            <td class="p-3 text-slate-600">\${b.location}</td>
+            <td class="p-3 text-right font-mono text-slate-500">\${b.rcvQty} \${b.unit}</td>
+            <td class="p-3 text-right font-mono font-bold text-cyan-800">\${b.currentQty.toFixed(2)} \${b.unit}</td>
+            <td class="p-3">
+              <span class="px-2 py-0.5 text-[10px] font-bold border rounded \${badgeClass}">
+                \${b.status}
+              </span>
+            </td>
+          </tr>
+        \`;
+      }).join('');
+    }
+
+    function filterBatchesTable() {
+      const filter = document.getElementById('batch-status-filter').value;
+      const rows = document.querySelectorAll('#batches-tbody tr');
+      rows.forEach(row => {
+        const status = row.children[8].innerText.trim();
+        if(filter === "" || status === filter) row.style.display = "";
+        else row.style.display = "none";
+      });
+    }
+
+    function renderAmmonia10Table() {
+      const tbody = document.getElementById('ammonia-10-tbody');
+      const batches10 = batchesLedger.filter(b => b.chemical === "10% Ammonia");
+      tbody.innerHTML = batches10.map(b => \`
+        <tr>
+          <td class="p-3 font-mono font-bold text-cyan-700">\${b.batchNo}</td>
+          <td class="p-3 font-mono text-slate-500">\${b.mfgDate}</td>
+          <td class="p-3 font-mono text-slate-700">\${b.expiryDate}</td>
+          <td class="p-3 text-right font-mono text-emerald-700 font-bold">\${b.rcvQty.toFixed(2)} kg</td>
+          <td class="p-3 text-right font-mono text-rose-600">-\${(b.rcvQty - b.currentQty).toFixed(2)} kg</td>
+          <td class="p-3 text-right font-mono text-slate-900 font-bold">\${b.currentQty.toFixed(2)} kg</td>
+          <td class="p-3 font-mono text-amber-700 font-medium">\${b.supplier}</td>
+          <td class="p-3">
+            <span class="px-2 py-0.5 text-[10px] bg-emerald-100 text-emerald-800 border border-emerald-200 rounded font-bold">Active</span>
+          </td>
+        </tr>
+      \`).join('');
+    }
+
+    function populateTransferBatches() {
+      const chem = document.getElementById('trf-chem').value;
+      const sel = document.getElementById('trf-batch');
+      const filtered = batchesLedger.filter(b => b.chemical === chem && b.currentQty > 0);
+      sel.innerHTML = filtered.map(b => \`<option value="\${b.batchNo}">\${b.batchNo} (\${b.currentQty} kg available)</option>\`).join('');
+    }
+
+    function handleTransferSubmit(e) {
+      e.preventDefault();
+      const chem = document.getElementById('trf-chem').value;
+      const batchNo = document.getElementById('trf-batch').value;
+      const qty = parseFloat(document.getElementById('trf-qty').value);
+      const source = document.getElementById('trf-source').value;
+      const dest = document.getElementById('trf-dest').value;
+      const remarks = document.getElementById('trf-remarks').value;
+      const today = new Date().toISOString().split('T')[0];
+
+      transferRecords.unshift({
+        date: today,
+        chemical: chem,
+        batchNo: batchNo,
+        source: source,
+        dest: dest,
+        qty: qty,
+        refNo: \`TRF-2026-\${Math.floor(10 + Math.random() * 90)}\`,
+        remarks: remarks
+      });
+
+      closeModal('modal-transfer');
+      renderTransfersTable();
+      showToast(\`Transferred \${qty} kg of \${chem} to \${dest}\`, "success");
+    }
+
+    function renderTransfersTable() {
+      const tbody = document.getElementById('transfers-tbody');
+      tbody.innerHTML = transferRecords.map(t => \`
+        <tr>
+          <td class="p-3 font-mono text-slate-500">\${t.date}</td>
+          <td class="p-3 font-bold text-slate-900">\${t.chemical}</td>
+          <td class="p-3 font-mono text-cyan-700 font-bold">\${t.batchNo}</td>
+          <td class="p-3 text-slate-600">\${t.source}</td>
+          <td class="p-3 text-purple-700 font-bold">\${t.dest}</td>
+          <td class="p-3 text-right font-mono font-bold text-slate-900">\${t.qty.toFixed(2)} kg</td>
+          <td class="p-3 font-mono text-slate-500">\${t.refNo}</td>
+          <td class="p-3 text-slate-700">\${t.remarks}</td>
+        </tr>
+      \`).join('');
+    }
+
+    function renderChemicalsMasterGrid() {
+      const grid = document.getElementById('chemicals-master-grid');
+      grid.innerHTML = CHEMICALS_MASTER.map(c => {
+        const totalStock = batchesLedger
+          .filter(b => b.chemical === c.name)
+          .reduce((sum, b) => sum + b.currentQty, 0);
+
+        return \`
+          <div class="glass-card p-5 rounded-xl border border-slate-200 space-y-3">
+            <div class="flex justify-between items-start">
+              <div>
+                <span class="text-[10px] font-mono text-slate-400 uppercase font-bold tracking-wider block">\${c.code}</span>
+                <h4 class="text-base font-bold text-slate-900">\${c.name}</h4>
+              </div>
+              <span class="px-2 py-0.5 text-[10px] font-bold bg-slate-100 text-slate-700 rounded border border-slate-200">
+                \${c.unit}
+              </span>
+            </div>
+
+            <p class="text-xs text-slate-500 leading-relaxed">\${c.desc}</p>
+
+            <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 flex justify-between items-center text-xs font-mono">
+              <span class="text-slate-600 font-sans font-medium">Total Available Stock:</span>
+              <span class="text-cyan-700 font-bold text-sm">\${totalStock.toLocaleString('en-US', {minimumFractionDigits: 1})} \${c.unit}</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 text-[10px] text-slate-500 pt-1">
+              <div>Location: <span class="text-slate-800 block truncate font-medium">\${c.location}</span></div>
+              <div>Daily Entry Req: <span class="\${c.reqDailyMorning ? 'text-amber-700 font-bold' : 'text-slate-400'} block">\${c.reqDailyMorning ? 'Yes (Ammonia)' : 'No (Usage Only)'}</span></div>
+            </div>
+          </div>
+        \`;
+      }).join('');
+    }
+
+    function renderMasterAuditHistory() {
+      const tbody = document.getElementById('history-tbody');
+      tbody.innerHTML = masterAuditLog.map(h => \`
+        <tr>
+          <td class="p-2.5 font-mono text-[11px] text-slate-500">\${h.timestamp}</td>
+          <td class="p-2.5 font-bold \${h.type === 'Usage' ? 'text-rose-600' : h.type === 'Receiving' ? 'text-blue-600' : 'text-cyan-700'}">\${h.type}</td>
+          <td class="p-2.5 font-bold text-slate-900">\${h.chemical}</td>
+          <td class="p-2.5 font-mono text-slate-700">\${h.batchOrBarrel}</td>
+          <td class="p-2.5 text-right font-mono font-bold text-slate-900">\${h.qty}</td>
+          <td class="p-2.5 text-slate-700">\${h.purpose}</td>
+          <td class="p-2.5 text-slate-500">\${h.supplierCustomer}</td>
+          <td class="p-2.5 font-mono text-slate-500">\${h.refNo}</td>
+        </tr>
+      \`).join('');
+    }
+
+    function filterHistoryTable() {
+      const query = document.getElementById('hist-search').value.toLowerCase();
+      const typeFilter = document.getElementById('hist-type-filter').value;
+      const chemFilter = document.getElementById('hist-chem-filter').value;
+      const dateFilter = document.getElementById('hist-date-filter').value;
+
+      const rows = document.querySelectorAll('#history-tbody tr');
+      rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        const typeCell = row.children[1].innerText;
+        const chemCell = row.children[2].innerText;
+        const dateCell = row.children[0].innerText;
+
+        const mQuery = text.includes(query);
+        const mType = typeFilter === "" || typeCell.includes(typeFilter);
+        const mChem = chemFilter === "" || chemCell.includes(chemFilter);
+        const mDate = dateFilter === "" || dateCell.includes(dateFilter);
+
+        if(mQuery && mType && mChem && mDate) row.style.display = "";
+        else row.style.display = "none";
+      });
+    }
+
+    function renderAlertsList() {
+      const container = document.getElementById('dash-alerts-list');
+      const fullContainer = document.getElementById('alerts-full-list');
+
+      const alerts = [
+        { type: "expiring", chem: "TMTD", batch: "TMTD-2026-A1", msg: "Expiring in 17 days (2026-10-15). Current Stock: 210 kg", color: "amber" },
+        { type: "expired", chem: "DAHP", batch: "DAHP-2025-X", msg: "BATCH EXPIRED (2026-08-01). Stock remaining: 45 kg - DO NOT USE", color: "rose" }
+      ];
+
+      const html = alerts.map(a => \`
+        <div class="p-3 bg-\${a.color}-50 rounded-lg border border-\${a.color}-200 flex items-start gap-2.5 text-xs">
+          <i data-lucide="\${a.type === 'expired' ? 'x-circle' : 'alert-triangle'}" class="w-4 h-4 text-\${a.color}-600 flex-shrink-0 mt-0.5"></i>
+          <div>
+            <span class="font-bold text-slate-900 block">\${a.chem} <span class="text-cyan-700 font-mono">(\${a.batch})</span></span>
+            <p class="text-slate-700 text-[11px] mt-0.5 font-medium">\${a.msg}</p>
+          </div>
+        </div>
+      \`).join('');
+
+      if(container) container.innerHTML = html;
+      if(fullContainer) fullContainer.innerHTML = html;
+    }
+
+    function selectReportTab(tabKey) {
+      document.querySelectorAll('#rtab-daily, #rtab-usage, #rtab-ammonia, #rtab-physical-vs-sys').forEach(btn => {
+        btn.classList.remove('text-cyan-700', 'border-b-2', 'border-cyan-700', 'font-bold');
+        btn.classList.add('text-slate-500');
+      });
+      document.getElementById('rtab-' + tabKey).classList.add('text-cyan-700', 'border-b-2', 'border-cyan-700', 'font-bold');
+      renderReportView(tabKey);
+    }
+
+    function renderReportView(type) {
+      const area = document.getElementById('report-content-area');
+      if(type === 'daily') {
+        area.innerHTML = \`
+          <div class="space-y-3">
+            <h4 class="font-bold text-slate-900 text-sm">Daily Store Balance Summary Report</h4>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 text-slate-600 border-b border-slate-200 uppercase text-[10px] font-bold">
+                  <tr>
+                    <th class="p-2.5">Chemical</th>
+                    <th class="p-2.5">Batch</th>
+                    <th class="p-2.5 text-right">Opening Stock</th>
+                    <th class="p-2.5 text-right">Received</th>
+                    <th class="p-2.5 text-right">Used / Prepared</th>
+                    <th class="p-2.5 text-right">Closing Stock</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 text-slate-700 font-mono">
+                  <tr><td class="p-2.5 text-slate-900 font-sans font-bold">25% Ammonia Barrels</td><td class="p-2.5 text-cyan-700 font-bold">AM25-B001</td><td class="p-2.5 text-right">660 kg</td><td class="p-2.5 text-right">0 kg</td><td class="p-2.5 text-right text-rose-600">-220 kg</td><td class="p-2.5 text-right text-emerald-700 font-bold">440 kg</td></tr>
+                  <tr><td class="p-2.5 text-slate-900 font-sans font-bold">10% Ammonia</td><td class="p-2.5 text-cyan-700 font-bold">AM10-P102</td><td class="p-2.5 text-right">605 kg</td><td class="p-2.5 text-right">+605 kg</td><td class="p-2.5 text-right text-rose-600">-50 kg</td><td class="p-2.5 text-right text-emerald-700 font-bold">1,160 kg</td></tr>
+                  <tr><td class="p-2.5 text-slate-900 font-sans font-bold">TMTD</td><td class="p-2.5 text-cyan-700 font-bold">TMTD-2026-A1</td><td class="p-2.5 text-right">225 kg</td><td class="p-2.5 text-right">0 kg</td><td class="p-2.5 text-right text-rose-600">-15 kg</td><td class="p-2.5 text-right text-emerald-700 font-bold">210 kg</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        \`;
+      } else if(type === 'ammonia') {
+        area.innerHTML = \`
+          <div class="space-y-3">
+            <h4 class="font-bold text-slate-900 text-sm">25% Ammonia Barrel & 10% Dilution Production Audit</h4>
+            <div class="p-3 bg-slate-50 rounded-lg text-xs space-y-1 border border-slate-200">
+              <p class="text-cyan-800 font-bold">10% Dilution Standard: 1 Barrel (220kg) + 385kg H2O = 605kg 10% Ammonia</p>
+              <p class="text-slate-600 font-medium">Total Barrels Processed Today: 1 Barrel (220.00 kg)</p>
+            </div>
+          </div>
+        \`;
+      } else {
+        area.innerHTML = \`<p class="text-xs text-slate-500 font-medium">Report dataset active and updated for print/export.</p>\`;
+      }
+    }
+
+    function openModal(id) {
+      const el = document.getElementById(id);
+      if(el) el.classList.remove('hidden');
+    }
+
+    function closeModal(id) {
+      const el = document.getElementById(id);
+      if(el) el.classList.add('hidden');
+    }
+
+    function showToast(message, type = "success") {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      
+      let bgColor = "bg-white border-cyan-500 text-slate-800";
+      if(type === "error") bgColor = "bg-rose-50 border-rose-500 text-rose-900";
+      if(type === "success") bgColor = "bg-emerald-50 border-emerald-500 text-emerald-900";
+
+      toast.className = \`p-3 rounded-lg border shadow-xl text-xs font-bold flex items-center gap-2 transition-all duration-300 \${bgColor}\`;
+      toast.innerHTML = \`<i data-lucide="info" class="w-4 h-4"></i> <span>\${message}</span>\`;
+
+      container.appendChild(toast);
+      if(window.lucide) lucide.createIcons();
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    function showModalAlert(title, message) {
+      alert(\`\${title}\\n\\n\${message}\`);
+    }
+
+    function triggerGlobalExport(format) {
+      showToast(\`Generating and exporting \${format} file...\`, "success");
+      setTimeout(() => {
+        window.print();
+      }, 500);
+    }
+  </script>
 </body>
 </html>

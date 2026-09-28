@@ -1,23 +1,19 @@
-'use client';
-
 import React from 'react';
 
+export const metadata = {
+  title: 'Chemical Store Management System',
+  description: 'Real UI for chemical inventory management',
+};
+
 export default function HomePage() {
+  // If the rewrite doesn't kick in for some reason during local dev,
+  // we can use a meta refresh to redirect to /app.html
   return (
-    <iframe
-      src="/app.html"
-      title="Chemical Store Management System"
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100vw',
-        height: '100vh',
-        border: 'none',
-        margin: 0,
-        padding: 0,
-        overflow: 'hidden',
-      }}
-    />
+    <>
+      <meta httpEquiv="refresh" content="0; url=/app.html" />
+      <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
+        Redirecting to application...
+      </div>
+    </>
   );
 }
