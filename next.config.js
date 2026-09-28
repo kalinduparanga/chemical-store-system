@@ -1,13 +1,12 @@
+// next.config.js
 /**
  * Next.js configuration compatible with Vercel.
+ * This file replaces the TypeScript version (next.config.ts) which Vercel does not support.
  */
-import type { NextConfig } from 'next';
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   // Enable React Strict Mode for development
   reactStrictMode: true,
-  // Use the default output directory ('.next') – Vercel will detect automatically
-  // No custom server needed
   // Allow image domains if needed later
   images: {
     domains: [],
@@ -18,4 +17,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
