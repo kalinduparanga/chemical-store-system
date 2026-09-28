@@ -84,7 +84,8 @@ def run_scenario_test():
 
     # Step 3: Test partial rejection rule (< 220 kg check)
     print("\n--- STEP 3: Verifying Partial Barrel Preparation is Strictly Rejected ---")
-    # Simulate a fake partial barrel of 150 kg
+    # Clean up any previous test partial barrel
+    cursor.execute("DELETE FROM barrels WHERE barrel_id = 'AM25-TEST-PARTIAL'")
     cursor.execute("""
         INSERT INTO barrels (barrel_id, batch_id, chemical_id, original_quantity, current_quantity, supplier_id, received_date, expiry_date, storage_location_id, status)
         VALUES ('AM25-TEST-PARTIAL', ?, ?, 220.00, 150.00, ?, ?, ?, ?, 'Partial')
