@@ -1,0 +1,1572 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-100 text-slate-800">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chemical Store Management System</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              500: '#0284c7',
+              600: '#0284c7',
+              700: '#0369a1',
+              800: '#075985',
+              900: '#0c4a6e',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    .glass-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+    }
+    .badge-valid { background-color: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+    .badge-expiring { background-color: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+    .badge-expired { background-color: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+  </style>
+</head>
+<body class="h-full font-sans antialiased text-slate-800 bg-slate-100 flex flex-col overflow-hidden">
+
+  <div id="app" class="flex h-screen w-full overflow-hidden">
+    
+    <!-- SIDEBAR NAVIGATION -->
+    <aside id="sidebar" class="w-64 bg-white border-r border-slate-200 flex flex-col flex-shrink-0 transition-all duration-300 z-20 shadow-sm">
+      
+      <!-- Logo Header -->
+      <div class="h-16 flex items-center px-4 border-b border-slate-200 gap-3 bg-white">
+        <div class="p-2 bg-gradient-to-tr from-cyan-600 to-blue-700 rounded-lg shadow-md text-white">
+          <i data-lucide="flask-conical" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h1 class="font-bold text-sm text-slate-900 tracking-wide leading-tight">CHEMSTORE PRO</h1>
+          <p class="text-[10px] text-cyan-700 font-semibold tracking-widest uppercase">Inventory System</p>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="flex-1 overflow-y-auto p-3 space-y-1 text-sm font-medium">
+        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 my-1.5">Overview</div>
+        
+        <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+          <i data-lucide="layout-dashboard" class="w-4 h-4 text-cyan-600"></i>
+          <span>Dashboard</span>
+        </button>
+
+        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 pt-3 pb-1">Daily Operations</div>
+
+        <button onclick="switchTab('daily-entry')" id="nav-daily-entry" class="nav-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+          <div class="flex items-center gap-3">
+            <i data-lucide="clipboard-check" class="w-4 h-4 text-emerald-600"></i>
+            <span>Daily Morning Entry</span>
+          </div>
+          <span class="px-1.5 py-0.5 text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 rounded font-bold">AM</span>
+        </button>
+
+        <button onclick="switchTab('usage')" id="nav-usage" class="nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+          <i data-lucide="minus-circle" class="w-4 h-4 text-rose-600"></i>
+          <span>Chemical Usage</span>
+        </button>
+
+        <button onclick="switchTab('receiving')" id="nav-receiving" class="nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+          <i data-lucide="arrow-down-left-square" class="w-4 h-4 text-blue-600"></i>
+          <span>Receiving (GRN)</span>
+        </button>
+
+        <button onclick="switchTab('transfers')" id="nav-transfers" class="nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+          <i data-lucide="arrow-right-left" class="w-4 h-4 text-purple-600"></i>
+          <span>Stock Transfers</span>
+        </button>
+
+        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 pt-3 pb-1">Ammonia Module</div>
+
+        <div class="space-y-1 pl-2 border-l-2 border-slate-200 ml-3 my-1">
+          <button onclick="switchTab('ammonia-barrels')" id="nav-ammonia-barrels" class="nav-btn w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+            <span>25% Barrel Stock</span>
+            <span id="badge-barrel-count" class="text-[10px] px-1.5 py-0.2 bg-amber-50 text-amber-800 border border-amber-200 rounded font-bold">-- Barrels</span>
+          </button>
+
+          <button onclick="switchTab('ammonia-ready')" id="nav-ammonia-ready" class="nav-btn w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+            <span>Ready-to-Use 25%</span>
+          </button>
+
+          <button onclick="switchTab('ammonia-10-stock')" id="nav-ammonia-10-stock" class="nav-btn w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+            <span>10% Ammonia Stock</span>
+          </button>
+
+          <button onclick="switchTab('ammonia-prep')" id="nav-ammonia-prep" class="nav-btn w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs text-cyan-800 font-bold hover:bg-cyan-50 transition-all border border-cyan-200 bg-cyan-50/50">
+            <span class="flex items-center gap-1.5"><i data-lucide="beaker" class="w-3.5 h-3.5"></i> 10% Preparation</span>
+            <span class="text-[9px] bg-cyan-700 text-white px-1.5 py-0.2 rounded font-bold">FIXED</span>
+          </button>
+        </div>
+
+        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 pt-3 pb-1">Ledger & Audit</div>
+
+        <button onclick="switchTab('chemicals')" id="nav-chemicals" class="nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+          <i data-lucide="package" class="w-4 h-4 text-indigo-600"></i>
+          <span>Chemicals Master</span>
+        </button>
+
+        <button onclick="switchTab('batches')" id="nav-batches" class="nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+          <i data-lucide="boxes" class="w-4 h-4 text-amber-600"></i>
+          <span>Batch & Expiry</span>
+        </button>
+
+        <button onclick="switchTab('reports')" id="nav-reports" class="nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+          <i data-lucide="file-spreadsheet" class="w-4 h-4 text-teal-600"></i>
+          <span>Reports & Analytics</span>
+        </button>
+
+        <button onclick="switchTab('history')" id="nav-history" class="nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+          <i data-lucide="history" class="w-4 h-4 text-slate-500"></i>
+          <span>Historical Audit Log</span>
+        </button>
+
+        <button onclick="switchTab('alerts')" id="nav-alerts" class="nav-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+          <div class="flex items-center gap-3">
+            <i data-lucide="bell" class="w-4 h-4 text-rose-600"></i>
+            <span>Alert Center</span>
+          </div>
+          <span id="badge-alert-count" class="px-1.5 py-0.5 text-[10px] bg-rose-100 text-rose-700 border border-rose-200 rounded-full font-bold">0</span>
+        </button>
+
+        <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all">
+          <i data-lucide="settings" class="w-4 h-4 text-slate-500"></i>
+          <span>Settings & Users</span>
+        </button>
+      </nav>
+
+      <!-- Sidebar Footer User Profile & Role Switcher -->
+      <div class="p-3 border-t border-slate-200 bg-slate-50 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div id="user-avatar-badge" class="w-8 h-8 rounded-full bg-cyan-100 border border-cyan-300 flex items-center justify-center font-bold text-xs text-cyan-800">
+            SK
+          </div>
+          <div>
+            <p id="current-user-name" class="text-xs font-bold text-slate-800 leading-none">Samitha K.</p>
+            <p id="current-user-role" class="text-[10px] text-slate-500 font-medium">Storekeeper</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <button onclick="openModal('modal-role-switch')" class="p-1.5 text-slate-500 hover:text-cyan-700 hover:bg-slate-200 rounded" title="Switch User / Role">
+            <i data-lucide="user-check" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN APP CONTAINER -->
+    <div class="flex-1 flex flex-col overflow-hidden bg-slate-100">
+      
+      <!-- Top Navigation Header -->
+      <header class="h-16 border-b border-slate-200 bg-white px-6 flex items-center justify-between flex-shrink-0 z-10 shadow-sm">
+        <div class="flex items-center gap-4">
+          <h2 id="current-page-title" class="text-lg font-bold text-slate-900 flex items-center gap-2">
+            Dashboard
+          </h2>
+          <span class="text-xs px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-medium flex items-center gap-1.5">
+            <i data-lucide="database" class="w-3.5 h-3.5 text-cyan-600"></i>
+            <span>Persistent Relational SQLite (WAL)</span>
+          </span>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <!-- Quick Action Buttons -->
+          <button onclick="openModal('modal-usage')" class="px-3 py-1.5 text-xs font-semibold bg-white hover:bg-slate-50 text-slate-700 rounded-lg border border-slate-300 flex items-center gap-1.5 shadow-sm transition">
+            <i data-lucide="minus" class="w-3.5 h-3.5 text-rose-600"></i> Log Usage
+          </button>
+          
+          <button onclick="openModal('modal-receiving')" class="px-3 py-1.5 text-xs font-semibold bg-white hover:bg-slate-50 text-slate-700 rounded-lg border border-slate-300 flex items-center gap-1.5 shadow-sm transition">
+            <i data-lucide="plus" class="w-3.5 h-3.5 text-blue-600"></i> Receive GRN
+          </button>
+
+          <button onclick="openModal('modal-prep')" class="px-3 py-1.5 text-xs font-bold bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg shadow-sm flex items-center gap-1.5 transition">
+            <i data-lucide="beaker" class="w-3.5 h-3.5"></i> Prepare 10% Ammonia
+          </button>
+
+          <div class="h-5 w-px bg-slate-200"></div>
+
+          <!-- Direct Excel Export -->
+          <a id="btn-export-excel-header" href="/api/export/stock-balance/excel" class="p-2 text-slate-600 hover:text-emerald-600 hover:bg-slate-100 rounded-lg border border-transparent transition" title="Export Stock Excel">
+            <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
+          </a>
+
+          <!-- Direct PDF Export -->
+          <a id="btn-export-pdf-header" href="/api/export/stock-balance/pdf" target="_blank" class="p-2 text-slate-600 hover:text-rose-600 hover:bg-slate-100 rounded-lg border border-transparent transition" title="Export Stock PDF">
+            <i data-lucide="file-text" class="w-4 h-4"></i>
+          </a>
+
+          <div class="text-right pl-3 border-l border-slate-200">
+            <p id="live-clock-time" class="font-mono text-xs font-bold text-slate-800">--:--:--</p>
+            <p id="live-clock-date" class="text-[10px] text-slate-500 font-medium">--</p>
+          </div>
+        </div>
+      </header>
+
+      <!-- VIEW PANELS CONTAINER -->
+      <main class="flex-1 overflow-y-auto p-6 space-y-6" id="main-view-container">
+
+        <!-- VIEW 1: DASHBOARD -->
+        <div id="view-dashboard" class="view-panel space-y-6">
+          
+          <!-- Top KPI Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            <div class="glass-card p-4 rounded-xl border border-slate-200 flex items-center justify-between">
+              <div>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Chemicals</p>
+                <h3 id="dash-kpi-chem-count" class="text-2xl font-bold text-slate-900 mt-1">6 Chemicals</h3>
+                <p class="text-[11px] text-emerald-600 font-semibold flex items-center gap-1 mt-1">
+                  <i data-lucide="check-circle-2" class="w-3 h-3"></i> 4 Normal | 2 Ammonia
+                </p>
+              </div>
+              <div class="p-3 bg-blue-50 text-blue-600 rounded-xl border border-blue-100">
+                <i data-lucide="flask-round" class="w-6 h-6"></i>
+              </div>
+            </div>
+
+            <div class="glass-card p-4 rounded-xl border border-slate-200 flex items-center justify-between">
+              <div>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">25% Barrel Stock</p>
+                <h3 id="dash-kpi-barrels" class="text-2xl font-bold text-amber-600 mt-1">-- Barrels</h3>
+                <p class="text-[11px] text-slate-500 mt-1">
+                  Total Weight: <span id="dash-kpi-barrel-kg" class="text-slate-800 font-mono font-bold">-- kg</span>
+                </p>
+              </div>
+              <div class="p-3 bg-amber-50 text-amber-600 rounded-xl border border-amber-100">
+                <i data-lucide="cylinder" class="w-6 h-6"></i>
+              </div>
+            </div>
+
+            <div class="glass-card p-4 rounded-xl border border-slate-200 flex items-center justify-between">
+              <div>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">10% Ammonia Stock</p>
+                <h3 id="dash-kpi-10-stock" class="text-2xl font-bold text-cyan-600 mt-1">-- kg</h3>
+                <p class="text-[11px] text-cyan-700 font-semibold flex items-center gap-1 mt-1">
+                  <i data-lucide="check" class="w-3 h-3"></i> Diluted Production
+                </p>
+              </div>
+              <div class="p-3 bg-cyan-50 text-cyan-600 rounded-xl border border-cyan-100">
+                <i data-lucide="droplet" class="w-6 h-6"></i>
+              </div>
+            </div>
+
+            <div class="glass-card p-4 rounded-xl border border-slate-200 flex items-center justify-between">
+              <div>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Alerts Center</p>
+                <h3 id="dash-kpi-alerts" class="text-2xl font-bold text-rose-600 mt-1">-- Items</h3>
+                <p class="text-[11px] text-rose-600 font-semibold flex items-center gap-1 mt-1">
+                  <i data-lucide="alert-triangle" class="w-3 h-3"></i> Expiry & Low Stock
+                </p>
+              </div>
+              <div class="p-3 bg-rose-50 text-rose-600 rounded-xl border border-rose-100">
+                <i data-lucide="bell" class="w-6 h-6"></i>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Live Ammonia Stock Breakdown Bar -->
+          <div class="glass-card p-5 rounded-xl border border-slate-200 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+              <div class="flex items-center gap-2">
+                <i data-lucide="beaker" class="w-5 h-5 text-cyan-600"></i>
+                <h3 class="font-bold text-sm text-slate-900">Live Ammonia Stores Breakdown (Strict Location Separation)</h3>
+              </div>
+              <span class="text-xs text-slate-500 font-medium">Database Synced</span>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <!-- 25% Barrel Store -->
+              <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs text-slate-600 font-bold">25% Ammonia Barrel Store</span>
+                  <span class="text-[10px] px-2 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-200 font-mono font-bold">220kg Sealed Barrels</span>
+                </div>
+                <div class="flex items-baseline justify-between">
+                  <span id="snap-barrel-count" class="text-xl font-bold text-slate-900">-- Barrels</span>
+                  <span id="snap-barrel-weight" class="font-mono text-sm text-amber-700 font-bold">-- kg</span>
+                </div>
+                <p class="text-[10px] text-slate-500 mt-2">Individually numbered & traceable</p>
+              </div>
+
+              <!-- Ready-to-Use 25% Ammonia Store -->
+              <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs text-slate-600 font-bold">Ready-to-Use 25% Store</span>
+                  <span class="text-[10px] px-2 py-0.5 rounded bg-blue-100 text-blue-800 border border-blue-200 font-mono font-bold">Unsealed Dispensing</span>
+                </div>
+                <div class="flex items-baseline justify-between">
+                  <span id="snap-ready-qty" class="text-xl font-bold text-slate-900">-- kg</span>
+                  <span class="font-mono text-xs text-slate-500 font-medium">Day-tank</span>
+                </div>
+                <p class="text-[10px] text-slate-500 mt-2">Fed by unsealed barrels</p>
+              </div>
+
+              <!-- 10% Diluted Ammonia Store -->
+              <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs text-slate-600 font-bold">10% Ammonia Store</span>
+                  <span class="text-[10px] px-2 py-0.5 rounded bg-cyan-100 text-cyan-800 border border-cyan-200 font-mono font-bold">Prepared Stock</span>
+                </div>
+                <div class="flex items-baseline justify-between">
+                  <span id="snap-10-qty" class="text-xl font-bold text-slate-900">-- kg</span>
+                  <span class="font-mono text-xs text-emerald-700 font-bold">Ready</span>
+                </div>
+                <p class="text-[10px] text-slate-500 mt-2">605 kg per prepared barrel</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main Dashboard Tables Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Left 2 Columns: Recent 220kg Barrel Transactions & Recent Usage -->
+            <div class="lg:col-span-2 space-y-6">
+              
+              <!-- Recent 220kg Barrel History -->
+              <div class="glass-card rounded-xl border border-slate-200 p-4">
+                <div class="flex items-center justify-between mb-4">
+                  <div class="flex items-center gap-2">
+                    <i data-lucide="cylinder" class="w-4 h-4 text-amber-600"></i>
+                    <h3 class="font-bold text-sm text-slate-900">Recent 25% Ammonia Barrel Activity (220 kg Traceability)</h3>
+                  </div>
+                  <button onclick="switchTab('ammonia-barrels')" class="text-xs text-amber-700 hover:underline font-semibold">View All Barrels &rarr;</button>
+                </div>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left text-xs">
+                    <thead class="bg-slate-50 text-slate-600 uppercase text-[10px] tracking-wider border-b border-slate-200 font-bold">
+                      <tr>
+                        <th class="p-2.5">Date</th>
+                        <th class="p-2.5">Barrel ID</th>
+                        <th class="p-2.5">Batch</th>
+                        <th class="p-2.5 text-right">Quantity</th>
+                        <th class="p-2.5">Purpose</th>
+                        <th class="p-2.5">Supplier / Customer</th>
+                        <th class="p-2.5 text-right">Remaining</th>
+                      </tr>
+                    </thead>
+                    <tbody id="dash-table-barrel-history" class="divide-y divide-slate-200 text-slate-700">
+                      <!-- Rendered JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Recent Usage Table -->
+              <div class="glass-card rounded-xl border border-slate-200 p-4">
+                <div class="flex items-center justify-between mb-4">
+                  <div class="flex items-center gap-2">
+                    <i data-lucide="minus-circle" class="w-4 h-4 text-rose-600"></i>
+                    <h3 class="font-bold text-sm text-slate-900">Recent Chemical Usage</h3>
+                  </div>
+                  <button onclick="switchTab('usage')" class="text-xs text-cyan-700 hover:underline font-semibold">View Full Ledger &rarr;</button>
+                </div>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left text-xs">
+                    <thead class="bg-slate-50 text-slate-600 uppercase text-[10px] tracking-wider border-b border-slate-200 font-bold">
+                      <tr>
+                        <th class="p-2.5">Date & Time</th>
+                        <th class="p-2.5">Chemical</th>
+                        <th class="p-2.5">Batch No.</th>
+                        <th class="p-2.5 text-right">Qty Used</th>
+                        <th class="p-2.5">Purpose / Ref</th>
+                      </tr>
+                    </thead>
+                    <tbody id="dash-table-usage" class="divide-y divide-slate-200 text-slate-700">
+                      <!-- Rendered JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Right Column: Morning Stock Status & Alert Notices -->
+            <div class="space-y-6">
+              
+              <!-- Today's Morning Physical Check Status -->
+              <div class="glass-card rounded-xl border border-slate-200 p-4">
+                <div class="flex items-center justify-between mb-3">
+                  <div class="flex items-center gap-2">
+                    <i data-lucide="sun" class="w-4 h-4 text-amber-600"></i>
+                    <h3 class="font-bold text-sm text-slate-900">Morning Physical Verification</h3>
+                  </div>
+                  <span id="dash-today-physical-status" class="px-2 py-0.5 text-[10px] font-bold rounded">--</span>
+                </div>
+                <p class="text-[11px] text-slate-500 mb-3 leading-relaxed">
+                  Entered every working morning for Ammonia stores only. Normal chemicals do NOT require daily morning checks.
+                </p>
+                <div class="space-y-2" id="dash-morning-summary">
+                  <!-- JS populated -->
+                </div>
+                <button onclick="switchTab('daily-entry')" class="w-full mt-4 py-2 text-xs font-bold text-cyan-700 bg-slate-50 hover:bg-slate-100 rounded-lg border border-slate-200 transition">
+                  Open Daily Morning Entry &rarr;
+                </button>
+              </div>
+
+              <!-- Expiring & Low Stock Alerts Panel -->
+              <div class="glass-card rounded-xl border border-slate-200 p-4">
+                <div class="flex items-center justify-between mb-3">
+                  <div class="flex items-center gap-2">
+                    <i data-lucide="alert-triangle" class="w-4 h-4 text-rose-600"></i>
+                    <h3 class="font-bold text-sm text-slate-900">Active Stock Alerts</h3>
+                  </div>
+                  <button onclick="switchTab('alerts')" class="text-xs text-rose-600 hover:underline font-semibold">Alert Center</button>
+                </div>
+                <div class="space-y-2.5" id="dash-alerts-list">
+                  <!-- JS populated -->
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+        <!-- VIEW 2: DAILY MORNING STOCK ENTRY -->
+        <div id="view-daily-entry" class="view-panel hidden space-y-6">
+          <div class="glass-card p-6 rounded-xl border border-slate-200 space-y-5">
+            <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 border-b border-slate-200 pb-4">
+              <div>
+                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                  <i data-lucide="clipboard-check" class="w-5 h-5 text-emerald-600"></i>
+                  Daily Morning Physical Stock Verification
+                </h3>
+                <p class="text-xs text-slate-500 mt-1">
+                  Required every working morning for Ammonia stores only. Preserves every historical check permanently.
+                </p>
+              </div>
+              <div class="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-xs flex items-center gap-2">
+                <i data-lucide="info" class="w-4 h-4 flex-shrink-0 text-amber-600"></i>
+                <span>TMTD, Zinc Oxide, Lauric Acid, & DAHP do NOT require daily morning entry.</span>
+              </div>
+            </div>
+
+            <!-- Morning Entry Form -->
+            <form id="form-daily-stock" onsubmit="handleDailyStockSubmit(event)" class="space-y-6">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">Verification Date</label>
+                  <input type="date" id="daily-date" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs font-mono text-slate-800 focus:outline-none focus:border-cyan-600" required>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">Verification Time</label>
+                  <input type="time" id="daily-time" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs font-mono text-slate-800 focus:outline-none focus:border-cyan-600" required>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">Store Inspector / Officer</label>
+                  <input type="text" id="daily-operator" value="Samitha K. (Storekeeper)" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-800" required>
+                </div>
+              </div>
+
+              <!-- Physical vs System Table Input -->
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                  <thead class="bg-slate-50 text-slate-600 uppercase text-[10px] tracking-wider border-b border-slate-200 font-bold">
+                    <tr>
+                      <th class="p-3">Store Location / Chemical</th>
+                      <th class="p-3">Unit</th>
+                      <th class="p-3 text-right">System Calculated Qty</th>
+                      <th class="p-3 text-right">Physical Measured Qty</th>
+                      <th class="p-3 text-right">Variance (Diff)</th>
+                      <th class="p-3">Inspector Remarks</th>
+                    </tr>
+                  </thead>
+                  <tbody id="daily-entry-table-body" class="divide-y divide-slate-200 text-slate-700">
+                    <!-- Populated via API data -->
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="flex justify-end gap-3 pt-2">
+                <button type="submit" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-xs shadow-md flex items-center gap-2">
+                  <i data-lucide="check-circle" class="w-4 h-4"></i> Save Morning Physical Verification
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Historical Morning Entry Table -->
+          <div class="glass-card p-5 rounded-xl border border-slate-200 space-y-4">
+            <div class="flex justify-between items-center">
+              <h4 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                <i data-lucide="history" class="w-4 h-4 text-cyan-600"></i> Historical Daily Morning Entries (Permanent Log)
+              </h4>
+              <a href="/api/export/physical-vs-system/excel" class="text-xs text-emerald-700 hover:underline font-bold flex items-center gap-1">
+                <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i> Export Excel
+              </a>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 text-slate-600 uppercase text-[10px] tracking-wider border-b border-slate-200 font-bold">
+                  <tr>
+                    <th class="p-2.5">Date & Time</th>
+                    <th class="p-2.5">Store / Chemical</th>
+                    <th class="p-2.5 text-right">System Qty</th>
+                    <th class="p-2.5 text-right">Physical Qty</th>
+                    <th class="p-2.5 text-right">Variance</th>
+                    <th class="p-2.5">Remarks</th>
+                    <th class="p-2.5">Inspector</th>
+                  </tr>
+                </thead>
+                <tbody id="daily-history-tbody" class="divide-y divide-slate-200 text-slate-700">
+                  <!-- Rendered JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIEW 3: CHEMICAL USAGE -->
+        <div id="view-usage" class="view-panel hidden space-y-6">
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+              <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                <i data-lucide="minus-circle" class="w-5 h-5 text-rose-600"></i>
+                Chemical Usage Ledger
+              </h3>
+              <p class="text-xs text-slate-500">Record daily consumption for TMTD, Zinc Oxide, Lauric Acid, DAHP, and Ammonia stores.</p>
+            </div>
+            <button onclick="openModal('modal-usage')" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold shadow-md flex items-center gap-2">
+              <i data-lucide="plus" class="w-4 h-4"></i> Record New Usage
+            </button>
+          </div>
+
+          <div class="glass-card rounded-xl border border-slate-200 p-4 space-y-4">
+            <div class="flex flex-col md:flex-row gap-3 justify-between">
+              <div class="relative w-full md:w-80">
+                <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-slate-400"></i>
+                <input type="text" id="usage-search-input" onkeyup="filterUsageTable()" placeholder="Search batch, chemical, purpose, ref..." class="w-full bg-white border border-slate-300 rounded-lg pl-9 pr-3 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-cyan-600">
+              </div>
+              <div class="flex items-center gap-2">
+                <select id="usage-filter-chemical" onchange="filterUsageTable()" class="bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-800">
+                  <option value="">All Chemicals</option>
+                  <option value="TMTD">TMTD</option>
+                  <option value="Zinc Oxide">Zinc Oxide</option>
+                  <option value="Lauric Acid">Lauric Acid</option>
+                  <option value="DAHP">DAHP</option>
+                  <option value="Ammonia 25%">Ammonia 25%</option>
+                  <option value="Ammonia 10%">Ammonia 10%</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 text-slate-600 uppercase text-[10px] tracking-wider border-b border-slate-200 font-bold">
+                  <tr>
+                    <th class="p-3">Date & Time</th>
+                    <th class="p-3">Chemical</th>
+                    <th class="p-3">Batch Number</th>
+                    <th class="p-3">Storage Location</th>
+                    <th class="p-3 text-right">Qty Used</th>
+                    <th class="p-3">Purpose</th>
+                    <th class="p-3">Supplier / Customer</th>
+                    <th class="p-3">Ref No.</th>
+                    <th class="p-3">Remarks</th>
+                    <th class="p-3">Operator</th>
+                  </tr>
+                </thead>
+                <tbody id="usage-table-tbody" class="divide-y divide-slate-200 text-slate-700">
+                  <!-- Rendered JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIEW 4: RECEIVING (GRN) -->
+        <div id="view-receiving" class="view-panel hidden space-y-6">
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+              <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                <i data-lucide="arrow-down-left-square" class="w-5 h-5 text-blue-600"></i>
+                Chemical Receiving & Goods Received Notes (GRN)
+              </h3>
+              <p class="text-xs text-slate-500">Record incoming shipments. 25% Ammonia automatically creates individual 220kg barrels.</p>
+            </div>
+            <button onclick="openModal('modal-receiving')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold shadow-md flex items-center gap-2">
+              <i data-lucide="plus-circle" class="w-4 h-4"></i> New Shipment Receiving
+            </button>
+          </div>
+
+          <div class="glass-card rounded-xl border border-slate-200 p-4">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 text-slate-600 uppercase text-[10px] tracking-wider border-b border-slate-200 font-bold">
+                  <tr>
+                    <th class="p-3">Date Received</th>
+                    <th class="p-3">GRN / Invoice</th>
+                    <th class="p-3">Chemical</th>
+                    <th class="p-3">Batch No</th>
+                    <th class="p-3">Mfg Date</th>
+                    <th class="p-3">Expiry Date</th>
+                    <th class="p-3">Supplier</th>
+                    <th class="p-3 text-right">Received Qty</th>
+                    <th class="p-3">Storage Location</th>
+                    <th class="p-3">Received By</th>
+                  </tr>
+                </thead>
+                <tbody id="receiving-table-tbody" class="divide-y divide-slate-200 text-slate-700">
+                  <!-- Rendered JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIEW 5A: 25% AMMONIA BARREL MANAGEMENT -->
+        <div id="view-ammonia-barrels" class="view-panel hidden space-y-6">
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+              <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                <i data-lucide="cylinder" class="w-5 h-5 text-amber-600"></i>
+                25% Ammonia Barrel Stock Tracking (220 kg Individually Traceable)
+              </h3>
+              <p class="text-xs text-slate-500">Each barrel maintains its individual identity and complete permanent transaction history.</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <button onclick="openModal('modal-barrel-usage')" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-lg text-xs shadow-md flex items-center gap-2">
+                <i data-lucide="edit-3" class="w-4 h-4"></i> 25% Barrel Usage / Update
+              </button>
+            </div>
+          </div>
+
+          <!-- Active Barrels Cards Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="barrel-cards-grid">
+            <!-- Dynamically populated barrel cards -->
+          </div>
+
+          <!-- Permanent 220kg Barrel History Ledger -->
+          <div class="glass-card rounded-xl border border-slate-200 p-4 space-y-3">
+            <div class="flex justify-between items-center">
+              <h4 class="font-bold text-sm text-slate-800 flex items-center gap-2">
+                <i data-lucide="history" class="w-4 h-4 text-amber-600"></i> Permanent 25% Ammonia Barrel Transaction Ledger
+              </h4>
+              <a href="/api/export/ammonia-audit/excel" class="text-xs text-emerald-700 hover:underline font-bold flex items-center gap-1">
+                <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i> Export Ammonia Excel
+              </a>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 text-slate-600 uppercase text-[10px] tracking-wider border-b border-slate-200 font-bold">
+                  <tr>
+                    <th class="p-2.5">Date / Time</th>
+                    <th class="p-2.5">Barrel ID</th>
+                    <th class="p-2.5">Batch No</th>
+                    <th class="p-2.5 text-right">Original</th>
+                    <th class="p-2.5 text-right">Qty Used</th>
+                    <th class="p-2.5 text-right">Remaining</th>
+                    <th class="p-2.5">Usage Purpose</th>
+                    <th class="p-2.5">Supplier / Customer</th>
+                    <th class="p-2.5">Destination</th>
+                    <th class="p-2.5">Ref No</th>
+                    <th class="p-2.5">Operator</th>
+                  </tr>
+                </thead>
+                <tbody id="barrel-history-tbody" class="divide-y divide-slate-200 text-slate-700">
+                  <!-- JS populated -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIEW 5B: READY TO USE 25% AMMONIA -->
+        <div id="view-ammonia-ready" class="view-panel hidden space-y-6">
+          <div class="glass-card p-6 rounded-xl border border-slate-200 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-200 pb-4">
+              <div>
+                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                  <i data-lucide="droplets" class="w-5 h-5 text-blue-600"></i>
+                  Ready-to-Use 25% Ammonia Store
+                </h3>
+                <p class="text-xs text-slate-500 mt-1">
+                  Active dispensing day-tank store. Tracked separately from sealed 25% barrel warehouse.
+                </p>
+              </div>
+              <div class="text-right">
+                <span class="text-3xl font-bold font-mono text-blue-600" id="ready-store-total">-- kg</span>
+                <span class="block text-[10px] text-slate-500">Available Ready Stock</span>
+              </div>
+            </div>
+
+            <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Active Batches in Ready Store</h4>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 text-slate-600 uppercase text-[10px] font-bold border-b border-slate-200">
+                  <tr>
+                    <th class="p-2.5">Batch Number</th>
+                    <th class="p-2.5">Expiry Date</th>
+                    <th class="p-2.5 text-right">Received Qty</th>
+                    <th class="p-2.5 text-right">Current Available Qty</th>
+                    <th class="p-2.5">Status</th>
+                    <th class="p-2.5">Remarks</th>
+                  </tr>
+                </thead>
+                <tbody id="ready-batches-tbody" class="divide-y divide-slate-200 text-slate-700 font-mono">
+                  <!-- JS populated -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIEW 5C: 10% AMMONIA STOCK -->
+        <div id="view-ammonia-10-stock" class="view-panel hidden space-y-6">
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+              <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                <i data-lucide="flask-round" class="w-5 h-5 text-cyan-600"></i>
+                10% Diluted Ammonia Stock
+              </h3>
+              <p class="text-xs text-slate-500">Stock created from fixed ratio preparation (605.00 kg per 220kg barrel).</p>
+            </div>
+            <button onclick="switchTab('ammonia-prep')" class="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg text-xs font-bold shadow-md flex items-center gap-2">
+              <i data-lucide="plus" class="w-4 h-4"></i> Prepare New 10% Batch
+            </button>
+          </div>
+
+          <div class="glass-card rounded-xl border border-slate-200 p-4">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 text-slate-600 uppercase text-[10px] tracking-wider border-b border-slate-200 font-bold">
+                  <tr>
+                    <th class="p-3">10% Batch Number</th>
+                    <th class="p-3">Mfg / Prep Date</th>
+                    <th class="p-3">Expiry Date</th>
+                    <th class="p-3 text-right">Produced Qty</th>
+                    <th class="p-3 text-right">Current Stock</th>
+                    <th class="p-3">Source Information</th>
+                    <th class="p-3">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="ammonia-10-tbody" class="divide-y divide-slate-200 text-slate-700">
+                  <!-- Rendered JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIEW 5D: 10% AMMONIA PREPARATION (STRICT FIXED FORMULA) -->
+        <div id="view-ammonia-prep" class="view-panel hidden space-y-6">
+          <div class="glass-card max-w-3xl mx-auto p-6 rounded-2xl border border-slate-200 space-y-6">
+            
+            <div class="border-b border-slate-200 pb-4 flex items-center justify-between">
+              <div>
+                <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-cyan-100 text-cyan-800 border border-cyan-200 rounded-full">
+                  STRICT COMPANY PROTOCOL
+                </span>
+                <h3 class="text-xl font-bold text-slate-900 mt-2 flex items-center gap-2">
+                  <i data-lucide="beaker" class="w-6 h-6 text-cyan-600"></i>
+                  10% Ammonia Batch Preparation
+                </h3>
+              </div>
+              <div class="text-right">
+                <p class="text-xs text-slate-500 font-medium">Standard Formula</p>
+                <p class="text-xs font-mono font-bold text-slate-800">220kg (25%) + 385kg (H₂O) = 605kg (10%)</p>
+              </div>
+            </div>
+
+            <!-- FIXED FORMULA DISPLAY BOX (LOCKED VALUES) -->
+            <div class="p-4 bg-slate-50 rounded-xl border border-cyan-200 space-y-3">
+              <div class="flex items-center justify-between">
+                <p class="text-xs font-bold text-slate-700 uppercase tracking-wider">Fixed Recipe Specification (Locked / Non-Editable)</p>
+                <span class="text-[10px] text-rose-600 font-bold bg-rose-50 border border-rose-200 px-2 py-0.5 rounded">Partial Barrels Forbidden</span>
+              </div>
+              <div class="grid grid-cols-3 gap-3 text-center">
+                <div class="bg-white p-3.5 rounded-lg border border-slate-200">
+                  <span class="text-[10px] text-amber-700 font-bold block uppercase">25% Ammonia Used</span>
+                  <span class="text-2xl font-mono font-bold text-slate-900 mt-1 block">220.00 kg</span>
+                  <span class="text-[10px] text-slate-500 block mt-1">Exactly 1 Complete Barrel</span>
+                </div>
+                <div class="bg-white p-3.5 rounded-lg border border-slate-200">
+                  <span class="text-[10px] text-blue-700 font-bold block uppercase">Water Added</span>
+                  <span class="text-2xl font-mono font-bold text-slate-900 mt-1 block">385.00 kg</span>
+                  <span class="text-[10px] text-slate-500 block mt-1">Purified Dilution Water</span>
+                </div>
+                <div class="bg-cyan-50 p-3.5 rounded-lg border border-cyan-200">
+                  <span class="text-[10px] text-cyan-800 font-bold block uppercase">10% Ammonia Produced</span>
+                  <span class="text-2xl font-mono font-bold text-cyan-700 mt-1 block">605.00 kg</span>
+                  <span class="text-[10px] text-cyan-700 block mt-1">Output Yield</span>
+                </div>
+              </div>
+            </div>
+
+            <form id="form-prep-main" onsubmit="handlePrepSubmit(event)" class="space-y-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">
+                  Select Source 25% Ammonia Barrel (Must have ≥ 220.00 kg available)
+                </label>
+                <select id="prep-select-barrel" class="w-full bg-white border border-slate-300 rounded-lg p-3 text-xs font-mono text-slate-800 focus:outline-none focus:border-cyan-600" required>
+                  <!-- JS populated -->
+                </select>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">Production Date</label>
+                  <input type="date" id="prep-date" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-xs font-mono text-slate-800" required>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">New 10% Batch Expiry Date</label>
+                  <input type="date" id="prep-exp-date" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-xs font-mono text-slate-800" required>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">Batch Reference Number</label>
+                  <input type="text" id="prep-ref" value="PREP-2026-110" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-xs font-mono text-slate-800" required>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">Operator / Senior Chemist</label>
+                  <input type="text" id="prep-operator" value="Samitha K. (Storekeeper)" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-xs text-slate-800" required>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Preparation Remarks</label>
+                <input type="text" id="prep-remarks" placeholder="e.g. Tank #1 preparation, standard batch run" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-xs text-slate-800">
+              </div>
+
+              <div class="pt-4 flex justify-end gap-3 border-t border-slate-200">
+                <button type="button" onclick="switchTab('dashboard')" class="px-4 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-xs font-bold">
+                  Cancel
+                </button>
+                <button type="submit" class="px-6 py-2.5 bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-xs rounded-lg shadow-md flex items-center gap-2">
+                  <i data-lucide="beaker" class="w-4 h-4"></i> Confirm 10% Batch Preparation (605 kg)
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- VIEW 6: STOCK TRANSFERS -->
+        <div id="view-transfers" class="view-panel hidden space-y-6">
+          <div class="flex justify-between items-center">
+            <div>
+              <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                <i data-lucide="arrow-right-left" class="w-5 h-5 text-purple-600"></i>
+                Stock Transfers Between Locations
+              </h3>
+              <p class="text-xs text-slate-500">Transfers stock between warehouses while preserving original batch numbers.</p>
+            </div>
+            <button onclick="openModal('modal-transfer')" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold shadow-md flex items-center gap-2">
+              <i data-lucide="plus" class="w-4 h-4"></i> New Location Transfer
+            </button>
+          </div>
+
+          <div class="glass-card rounded-xl border border-slate-200 p-4">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 text-slate-600 uppercase text-[10px] tracking-wider border-b border-slate-200 font-bold">
+                  <tr>
+                    <th class="p-3">Date & Time</th>
+                    <th class="p-3">Chemical</th>
+                    <th class="p-3">Batch Number</th>
+                    <th class="p-3">Barrel ID</th>
+                    <th class="p-3">Source Location</th>
+                    <th class="p-3">Destination Location</th>
+                    <th class="p-3 text-right">Transfer Qty</th>
+                    <th class="p-3">Ref No</th>
+                    <th class="p-3">Purpose / Remarks</th>
+                    <th class="p-3">Operator</th>
+                  </tr>
+                </thead>
+                <tbody id="transfers-tbody" class="divide-y divide-slate-200 text-slate-700">
+                  <!-- Rendered JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIEW 7: CHEMICALS MASTER -->
+        <div id="view-chemicals" class="view-panel hidden space-y-6">
+          <div class="flex justify-between items-center">
+            <div>
+              <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                <i data-lucide="package" class="w-5 h-5 text-indigo-600"></i>
+                Chemical Master Inventory
+              </h3>
+              <p class="text-xs text-slate-500">Registered store chemicals, default units, and minimum stock alert thresholds.</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="chemicals-master-grid">
+            <!-- JS Populated -->
+          </div>
+        </div>
+
+        <!-- VIEW 8: BATCH & EXPIRY MANAGEMENT -->
+        <div id="view-batches" class="view-panel hidden space-y-6">
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+              <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                <i data-lucide="boxes" class="w-5 h-5 text-amber-600"></i>
+                Batch & Expiry Management
+              </h3>
+              <p class="text-xs text-slate-500">Strict batch segregation and real-time expiration monitoring.</p>
+            </div>
+            
+            <div class="flex items-center gap-3">
+              <select id="batch-filter-status" onchange="loadBatchesTable()" class="bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-800">
+                <option value="">All Statuses</option>
+                <option value="Valid">Valid Stock</option>
+                <option value="Expiring Soon">Expiring Soon</option>
+                <option value="Expired">Expired</option>
+              </select>
+              <button onclick="openModal('modal-add-batch')" class="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm">
+                <i data-lucide="plus" class="w-3.5 h-3.5"></i> Register Batch
+              </button>
+            </div>
+          </div>
+
+          <div class="glass-card rounded-xl border border-slate-200 p-4">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 text-slate-600 uppercase text-[10px] tracking-wider border-b border-slate-200 font-bold">
+                  <tr>
+                    <th class="p-3">Chemical</th>
+                    <th class="p-3">Batch Number</th>
+                    <th class="p-3">Mfg Date</th>
+                    <th class="p-3">Expiry Date</th>
+                    <th class="p-3">Supplier</th>
+                    <th class="p-3">Storage Location</th>
+                    <th class="p-3 text-right">Received Qty</th>
+                    <th class="p-3 text-right">Current Available</th>
+                    <th class="p-3">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="batches-tbody" class="divide-y divide-slate-200 text-slate-700">
+                  <!-- Rendered JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIEW 9: REPORTS -->
+        <div id="view-reports" class="view-panel hidden space-y-6">
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+              <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                <i data-lucide="file-spreadsheet" class="w-5 h-5 text-teal-600"></i>
+                Store Reports & Analytics
+              </h3>
+              <p class="text-xs text-slate-500">Official ledger reports with verified Excel and PDF export downloads.</p>
+            </div>
+            
+            <div class="flex items-center gap-2">
+              <button onclick="downloadActiveReportExcel()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm">
+                <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i> Download Excel (.xlsx)
+              </button>
+              <button onclick="downloadActiveReportPDF()" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm">
+                <i data-lucide="file-text" class="w-3.5 h-3.5"></i> Download PDF (.pdf)
+              </button>
+            </div>
+          </div>
+
+          <!-- Report Selector Tabs -->
+          <div class="flex border-b border-slate-200 space-x-2 text-xs font-medium overflow-x-auto pb-1">
+            <button onclick="selectReportTab('daily')" id="rtab-daily" class="px-4 py-2 text-cyan-700 border-b-2 border-cyan-700 font-bold whitespace-nowrap">Daily Store Movement</button>
+            <button onclick="selectReportTab('usage')" id="rtab-usage" class="px-4 py-2 text-slate-500 hover:text-slate-800 whitespace-nowrap">Monthly Chemical Usage</button>
+            <button onclick="selectReportTab('stock')" id="rtab-stock" class="px-4 py-2 text-slate-500 hover:text-slate-800 whitespace-nowrap">Stock Balance by Batch</button>
+            <button onclick="selectReportTab('ammonia')" id="rtab-ammonia" class="px-4 py-2 text-slate-500 hover:text-slate-800 whitespace-nowrap">Ammonia Barrels & Dilution Audit</button>
+            <button onclick="selectReportTab('physical-vs-sys')" id="rtab-physical-vs-sys" class="px-4 py-2 text-slate-500 hover:text-slate-800 whitespace-nowrap">Physical vs System Reconciliation</button>
+          </div>
+
+          <div id="report-content-area" class="glass-card rounded-xl border border-slate-200 p-5 space-y-4">
+            <!-- Dynamic report content generated via JS -->
+          </div>
+        </div>
+
+        <!-- VIEW 10: HISTORICAL AUDIT LOG -->
+        <div id="view-history" class="view-panel hidden space-y-6">
+          <div class="glass-card p-4 rounded-xl border border-slate-200 space-y-4">
+            <div class="flex justify-between items-center">
+              <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                <i data-lucide="history" class="w-5 h-5 text-slate-500"></i>
+                Historical Transaction Traceability Ledger
+              </h3>
+              <button onclick="downloadHistoricalExcel()" class="text-xs text-emerald-700 hover:underline font-bold flex items-center gap-1">
+                <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i> Export Ledger (.xlsx)
+              </button>
+            </div>
+            
+            <!-- Multi-Filter Search Bar -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-3 bg-slate-50 p-3 rounded-lg border border-slate-200">
+              <div>
+                <label class="block text-[10px] uppercase font-bold text-slate-500 mb-1">Keywords</label>
+                <input type="text" id="hist-search" onkeyup="loadHistoricalTransactions()" placeholder="Batch, Barrel, Ref, Supplier..." class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-800">
+              </div>
+              <div>
+                <label class="block text-[10px] uppercase font-bold text-slate-500 mb-1">Transaction Type</label>
+                <select id="hist-type-filter" onchange="loadHistoricalTransactions()" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-800">
+                  <option value="">All Types</option>
+                  <option value="Usage">Usage</option>
+                  <option value="Receiving">Receiving (GRN)</option>
+                  <option value="Preparation">Ammonia Preparation</option>
+                  <option value="Transfer">Stock Transfer</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[10px] uppercase font-bold text-slate-500 mb-1">Chemical</label>
+                <select id="hist-chem-filter" onchange="loadHistoricalTransactions()" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-800">
+                  <option value="">All Chemicals</option>
+                  <!-- Populated -->
+                </select>
+              </div>
+              <div>
+                <label class="block text-[10px] uppercase font-bold text-slate-500 mb-1">Date Filter</label>
+                <input type="date" id="hist-date-filter" onchange="loadHistoricalTransactions()" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-800 font-mono">
+              </div>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 text-slate-600 uppercase text-[10px] tracking-wider border-b border-slate-200 font-bold">
+                  <tr>
+                    <th class="p-2.5">Date & Time</th>
+                    <th class="p-2.5">Type</th>
+                    <th class="p-2.5">Chemical</th>
+                    <th class="p-2.5">Batch / Barrel ID</th>
+                    <th class="p-2.5 text-right">Quantity</th>
+                    <th class="p-2.5">Purpose / Action</th>
+                    <th class="p-2.5">Supplier / Customer</th>
+                    <th class="p-2.5">Location</th>
+                    <th class="p-2.5">Ref No.</th>
+                    <th class="p-2.5">Operator</th>
+                  </tr>
+                </thead>
+                <tbody id="history-tbody" class="divide-y divide-slate-200 text-slate-700">
+                  <!-- JS Populated -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIEW 11: ALERTS -->
+        <div id="view-alerts" class="view-panel hidden space-y-6">
+          <div class="glass-card p-5 rounded-xl border border-slate-200 space-y-4">
+            <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+              <i data-lucide="bell" class="w-5 h-5 text-rose-600"></i>
+              Active Inventory & Expiry Notifications
+            </h3>
+            <div id="alerts-full-list" class="space-y-3">
+              <!-- JS Populated -->
+            </div>
+          </div>
+        </div>
+
+        <!-- VIEW 12: SETTINGS & USERS -->
+        <div id="view-settings" class="view-panel hidden space-y-6">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            <div class="glass-card p-6 rounded-xl border border-slate-200 space-y-5">
+              <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                <i data-lucide="sliders" class="w-5 h-5 text-slate-500"></i>
+                System Configuration
+              </h3>
+              
+              <div class="space-y-4 text-xs">
+                <div>
+                  <label class="block text-slate-700 font-bold mb-1">Expiry Warning Lead Days</label>
+                  <input type="number" id="setting-expiry-days" value="30" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 font-mono text-slate-800">
+                  <p class="text-[10px] text-slate-500 mt-1">Batches expiring within this number of days will be flagged as Expiring Soon.</p>
+                </div>
+
+                <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
+                  <p class="font-bold text-slate-800 text-[11px]">10% Ammonia Dilution Specification (Hard-Locked)</p>
+                  <p class="text-[10px] text-slate-500 leading-relaxed">
+                    25% Ammonia: 220.00 kg | Water Added: 385.00 kg | Output: 605.00 kg. Fixed business protocol, not editable.
+                  </p>
+                </div>
+
+                <button onclick="saveSystemSettings()" class="px-4 py-2 bg-cyan-700 hover:bg-cyan-800 text-white rounded-lg font-bold">
+                  Save Configuration
+                </button>
+              </div>
+            </div>
+
+            <!-- Controlled Stock Adjustment (Admin Role) -->
+            <div class="glass-card p-6 rounded-xl border border-slate-200 space-y-5">
+              <div class="flex items-center justify-between">
+                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                  <i data-lucide="shield-alert" class="w-5 h-5 text-purple-600"></i>
+                  Controlled Stock Adjustment (Admin Only)
+                </h3>
+                <span class="text-[10px] px-2 py-0.5 rounded bg-purple-100 text-purple-800 border border-purple-200 font-bold">Audited</span>
+              </div>
+              
+              <form id="form-stock-adj" onsubmit="handleAdjustmentSubmit(event)" class="space-y-3 text-xs">
+                <div>
+                  <label class="block text-slate-700 font-bold mb-1">Select Batch</label>
+                  <select id="adj-select-batch" onchange="updateAdjustmentBatchMeta()" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800 font-mono" required>
+                    <!-- Populated -->
+                  </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-slate-700 font-bold mb-1">Current Quantity</label>
+                    <input type="text" id="adj-curr-qty" readonly class="w-full bg-slate-100 border border-slate-200 rounded-lg p-2.5 font-mono text-slate-500">
+                  </div>
+                  <div>
+                    <label class="block text-slate-700 font-bold mb-1">New Verified Quantity</label>
+                    <input type="number" step="0.01" id="adj-new-qty" placeholder="0.00" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 font-mono text-slate-900 font-bold" required>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-slate-700 font-bold mb-1">Mandatory Justification / Reason</label>
+                  <input type="text" id="adj-reason" placeholder="e.g. Physical inventory variance reconciliation verified by QA" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800" required>
+                </div>
+
+                <button type="submit" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-bold shadow-md">
+                  Execute Controlled Adjustment
+                </button>
+              </form>
+            </div>
+
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- MODAL 1: CHEMICAL USAGE -->
+  <div id="modal-usage" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white border border-slate-200 rounded-2xl w-full max-w-lg shadow-2xl space-y-4 p-6">
+      <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+        <h3 class="font-bold text-slate-900 flex items-center gap-2">
+          <i data-lucide="minus-circle" class="w-5 h-5 text-rose-600"></i> Record Chemical Usage
+        </h3>
+        <button onclick="closeModal('modal-usage')" class="text-slate-400 hover:text-slate-700"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <form id="form-record-usage" onsubmit="handleUsageSubmit(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block text-slate-700 font-bold mb-1">Select Chemical</label>
+          <select id="usage-chem-select" onchange="populateUsageBatches()" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800" required>
+            <!-- Populated via API -->
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">Select Batch Number</label>
+            <select id="usage-batch-select" onchange="updateUsageBatchMeta()" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800 font-mono" required>
+              <option value="">Select chemical first</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">Available Batch Stock</label>
+            <input type="text" id="usage-available-meta" readonly class="w-full bg-slate-100 border border-slate-200 text-cyan-800 font-bold font-mono rounded-lg p-2.5">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">Quantity Used</label>
+            <input type="number" step="0.01" id="usage-qty" placeholder="0.00" class="w-full bg-white border border-slate-300 text-slate-800 rounded-lg p-2.5 font-mono" required>
+          </div>
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">Unit</label>
+            <input type="text" id="usage-unit" value="kg" readonly class="w-full bg-slate-100 border border-slate-200 text-slate-500 rounded-lg p-2.5">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-slate-700 font-bold mb-1">Purpose of Usage</label>
+          <input type="text" id="usage-purpose" placeholder="e.g. Batch #402 Compounding Line A" class="w-full bg-white border border-slate-300 text-slate-800 rounded-lg p-2.5" required>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">Reference Number</label>
+            <input type="text" id="usage-ref" value="USG-2026-90" class="w-full bg-white border border-slate-300 text-slate-800 font-mono rounded-lg p-2.5" required>
+          </div>
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">Date</label>
+            <input type="date" id="usage-date" class="w-full bg-white border border-slate-300 text-slate-800 font-mono rounded-lg p-2.5" required>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-slate-700 font-bold mb-1">Supplier / Customer (Optional)</label>
+          <input type="text" id="usage-customer" placeholder="e.g. Dipping Line B / Internal" class="w-full bg-white border border-slate-300 text-slate-800 rounded-lg p-2.5">
+        </div>
+
+        <div>
+          <label class="block text-slate-700 font-bold mb-1">Remarks</label>
+          <input type="text" id="usage-remarks" placeholder="Optional notes" class="w-full bg-white border border-slate-300 text-slate-800 rounded-lg p-2.5">
+        </div>
+
+        <div class="pt-3 flex justify-end gap-2 border-t border-slate-200">
+          <button type="button" onclick="closeModal('modal-usage')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-lg shadow-md">
+            Submit Usage
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 2: 25% AMMONIA BARREL USAGE / UPDATE -->
+  <div id="modal-barrel-usage" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white border border-slate-200 rounded-2xl w-full max-w-lg shadow-2xl space-y-4 p-6">
+      <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+        <h3 class="font-bold text-slate-900 flex items-center gap-2">
+          <i data-lucide="cylinder" class="w-5 h-5 text-amber-600"></i> 25% Ammonia Barrel Usage / Update
+        </h3>
+        <button onclick="closeModal('modal-barrel-usage')" class="text-slate-400 hover:text-slate-700"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <form id="form-barrel-usage" onsubmit="handleBarrelUsageSubmit(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block text-slate-700 font-bold mb-1">Select Barrel (Batch Number)</label>
+          <select id="bu-select-barrel" onchange="updateBarrelModalMeta()" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800 font-mono" required>
+            <!-- Populated via API -->
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">Original Quantity</label>
+            <input type="text" id="bu-orig-qty" value="220.00 kg" readonly class="w-full bg-slate-100 border border-slate-200 text-slate-500 rounded-lg p-2.5 font-mono">
+          </div>
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">Current Stock in Barrel</label>
+            <input type="text" id="bu-curr-qty" readonly class="w-full bg-slate-100 border border-slate-200 text-amber-800 font-bold rounded-lg p-2.5 font-mono">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">Quantity Used / Transferred (kg)</label>
+            <input type="number" step="0.01" id="bu-used-qty" oninput="calcBarrelRemaining()" placeholder="e.g. 220" class="w-full bg-white border border-slate-300 text-slate-800 rounded-lg p-2.5 font-mono" required>
+          </div>
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">Remaining Qty (kg)</label>
+            <input type="text" id="bu-rem-qty" readonly class="w-full bg-slate-100 border border-slate-200 text-emerald-700 font-mono font-bold rounded-lg p-2.5">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-slate-700 font-bold mb-1">Usage Purpose</label>
+          <select id="bu-purpose" onchange="toggleCustomerSupplierField()" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800 font-medium" required>
+            <option value="10% Ammonia Preparation">10% Ammonia Preparation</option>
+            <option value="25% Ammonia Usage">25% Ammonia Usage</option>
+            <option value="Transfer to Ready-to-Use 25% Ammonia Store">Transfer to Ready-to-Use 25% Ammonia Store</option>
+            <option value="Latex Supplier / Customer Supply">Latex Supplier / Customer Supply</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div id="bu-customer-wrapper">
+          <label class="block text-slate-700 font-bold mb-1">Supplier / Customer Name</label>
+          <input type="text" id="bu-customer" placeholder="e.g. Lanka Latex Supplies Ltd / Dipping Plant" class="w-full bg-white border border-slate-300 text-slate-800 rounded-lg p-2.5">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">Reference Number</label>
+            <input type="text" id="bu-ref" value="BAR-2026-05" class="w-full bg-white border border-slate-300 text-slate-800 font-mono rounded-lg p-2.5" required>
+          </div>
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">Destination / Location</label>
+            <input type="text" id="bu-dest" value="10% Preparation Vat" class="w-full bg-white border border-slate-300 text-slate-800 rounded-lg p-2.5">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-slate-700 font-bold mb-1">Remarks</label>
+          <input type="text" id="bu-remarks" placeholder="Optional notes..." class="w-full bg-white border border-slate-300 text-slate-800 rounded-lg p-2.5">
+        </div>
+
+        <div class="pt-3 flex justify-end gap-2 border-t border-slate-200">
+          <button type="button" onclick="closeModal('modal-barrel-usage')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-lg shadow-md">
+            Confirm Barrel Transaction
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 3: CHEMICAL RECEIVING (GRN) -->
+  <div id="modal-receiving" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white border border-slate-200 rounded-2xl w-full max-w-lg shadow-2xl space-y-4 p-6">
+      <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+        <h3 class="font-bold text-slate-900 flex items-center gap-2">
+          <i data-lucide="arrow-down-left-square" class="w-5 h-5 text-blue-600"></i> Record Incoming Shipment (GRN)
+        </h3>
+        <button onclick="closeModal('modal-receiving')" class="text-slate-400 hover:text-slate-700"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <form id="form-receiving" onsubmit="handleReceivingSubmit(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block text-slate-700 font-bold mb-1">Chemical</label>
+          <select id="rcv-chem" onchange="toggleReceivingBarrelNotice()" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800" required>
+            <!-- Populated -->
+          </select>
+        </div>
+
+        <div id="rcv-barrel-notice" class="p-2.5 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-[11px] leading-relaxed">
+          <b>25% Ammonia Barrels:</b> Receiving 25% Ammonia will automatically generate individual 220 kg Barrel records with individual Barrel IDs in the 25% Ammonia Barrel Store.
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">Batch Number</label>
+            <input type="text" id="rcv-batch" placeholder="e.g. AM25-B005" class="w-full bg-white border border-slate-300 text-slate-800 font-mono rounded-lg p-2.5" required>
+          </div>
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">GRN / Invoice Number</label>
+            <input type="text" id="rcv-grn" value="GRN-2026-101" class="w-full bg-white border border-slate-300 text-slate-800 font-mono rounded-lg p-2.5" required>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">Quantity Received (kg)</label>
+            <input type="number" step="0.01" id="rcv-qty" placeholder="e.g. 220" class="w-full bg-white border border-slate-300 text-slate-800 font-mono rounded-lg p-2.5" required>
+          </div>
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">Date Received</label>
+            <input type="date" id="rcv-date" class="w-full bg-white border border-slate-300 text-slate-800 font-mono rounded-lg p-2.5" required>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">Manufacturing Date</label>
+            <input type="date" id="rcv-mfg-date" class="w-full bg-white border border-slate-300 text-slate-800 font-mono rounded-lg p-2.5">
+          </div>
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">Expiry Date</label>
+            <input type="date" id="rcv-exp-date" class="w-full bg-white border border-slate-300 text-slate-800 font-mono rounded-lg p-2.5" required>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-slate-700 font-bold mb-1">Supplier</label>
+          <select id="rcv-supplier" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800" required>
+            <!-- Populated -->
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-slate-700 font-bold mb-1">Storage Location</label>
+          <select id="rcv-location" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800" required>
+            <!-- Populated -->
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-slate-700 font-bold mb-1">Remarks</label>
+          <input type="text" id="rcv-remarks" placeholder="Optional shipment notes" class="w-full bg-white border border-slate-300 text-slate-800 rounded-lg p-2.5">
+        </div>
+
+        <div class="pt-3 flex justify-end gap-2 border-t border-slate-200">
+          <button type="button" onclick="closeModal('modal-receiving')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-md">
+            Save GRN Shipment
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 4: STOCK TRANSFER -->
+  <div id="modal-transfer" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white border border-slate-200 rounded-2xl w-full max-w-lg shadow-2xl space-y-4 p-6">
+      <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+        <h3 class="font-bold text-slate-900 flex items-center gap-2">
+          <i data-lucide="arrow-right-left" class="w-5 h-5 text-purple-600"></i> Transfer Stock Location
+        </h3>
+        <button onclick="closeModal('modal-transfer')" class="text-slate-400 hover:text-slate-700"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <form id="form-transfer" onsubmit="handleTransferSubmit(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block text-slate-700 font-bold mb-1">Chemical</label>
+          <select id="trf-chem" onchange="populateTransferBatches()" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800" required>
+            <!-- Populated -->
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">Batch Number</label>
+            <select id="trf-batch" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800 font-mono" required>
+              <option value="">Select chemical first</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">Quantity (kg)</label>
+            <input type="number" step="0.01" id="trf-qty" class="w-full bg-white border border-slate-300 text-slate-800 font-mono rounded-lg p-2.5" required>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">Source Location</label>
+            <select id="trf-source" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800" required>
+              <!-- Populated -->
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">Destination Location</label>
+            <select id="trf-dest" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800" required>
+              <!-- Populated -->
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-slate-700 font-bold mb-1">Purpose / Remarks</label>
+          <input type="text" id="trf-remarks" placeholder="e.g. Unsealing barrel for Ready-to-Use Store" class="w-full bg-white border border-slate-300 text-slate-800 rounded-lg p-2.5" required>
+        </div>
+
+        <div class="pt-3 flex justify-end gap-2 border-t border-slate-200">
+          <button type="button" onclick="closeModal('modal-transfer')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg shadow-md">
+            Execute Transfer
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 5: 10% PREPARATION QUICK MODAL -->
+  <div id="modal-prep" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white border border-slate-200 rounded-2xl w-full max-w-lg shadow-2xl space-y-4 p-6">
+      <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+        <h3 class="font-bold text-slate-900 flex items-center gap-2">
+          <i data-lucide="beaker" class="w-5 h-5 text-cyan-600"></i> Prepare 10% Ammonia (605 kg)
+        </h3>
+        <button onclick="closeModal('modal-prep')" class="text-slate-400 hover:text-slate-700"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <div class="p-3 bg-cyan-50 border border-cyan-200 rounded-lg text-xs space-y-1">
+        <p class="font-bold text-cyan-900">Standard Locked Preparation Yield:</p>
+        <p class="text-cyan-800">220 kg 25% Ammonia Barrel + 385 kg Water = <b>605 kg 10% Ammonia</b></p>
+      </div>
+
+      <form id="form-prep-modal" onsubmit="handleModalPrepSubmit(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block text-slate-700 font-bold mb-1">Select 25% Ammonia Barrel (Must have ≥ 220 kg)</label>
+          <select id="modal-prep-select-barrel" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800 font-mono" required>
+            <!-- Populated -->
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">Production Date</label>
+            <input type="date" id="modal-prep-date" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800 font-mono" required>
+          </div>
+          <div>
+            <label class="block text-slate-700 font-bold mb-1">Expiry Date (10%)</label>
+            <input type="date" id="modal-prep-exp" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800 font-mono" required>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-slate-700 font-bold mb-1">Reference Number</label>
+          <input type="text" id="modal-prep-ref" value="PREP-2026-111" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800 font-mono" required>
+        </div>
+
+        <div>
+          <label class="block text-slate-700 font-bold mb-1">Remarks</label>
+          <input type="text" id="modal-prep-remarks" placeholder="Optional batch remarks" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-slate-800">
+        </div>
+
+        <div class="pt-3 flex justify-end gap-2 border-t border-slate-200">
+          <button type="button" onclick="closeModal('modal-prep')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-cyan-600 hover:bg-cyan-700 text-white font-bold rounded-lg shadow-md">
+            Confirm & Produce 605 kg
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 6: ROLE & USER SWITCHER -->
+  <div id="modal-role-switch" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white border border-slate-200 rounded-2xl w-full max-w-sm shadow-2xl space-y-4 p-6">
+      <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+        <h3 class="font-bold text-slate-900 flex items-center gap-2">
+          <i data-lucide="user-check" class="w-5 h-5 text-cyan-600"></i> Switch Active Account
+        </h3>
+        <button onclick="closeModal('modal-role-switch')" class="text-slate-400 hover:text-slate-700"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <div class="space-y-2 text-xs">
+        <button onclick="loginAs('admin', 'admin123')" class="w-full p-3 bg-slate-50 hover:bg-slate-100 rounded-xl border border-slate-200 flex items-center justify-between text-left transition">
+          <div>
+            <p class="font-bold text-slate-900">Administrator</p>
+            <p class="text-[10px] text-slate-500">Full system & adjustment access</p>
+          </div>
+          <span class="text-cyan-700 font-bold">&rarr;</span>
+        </button>
+
+        <button onclick="loginAs('storekeeper', 'store123')" class="w-full p-3 bg-slate-50 hover:bg-slate-100 rounded-xl border border-slate-200 flex items-center justify-between text-left transition">
+          <div>
+            <p class="font-bold text-slate-900">Storekeeper</p>
+            <p class="text-[10px] text-slate-500">Daily entry, usage, receiving, dilution</p>
+          </div>
+          <span class="text-cyan-700 font-bold">&rarr;</span>
+        </button>
+
+        <button onclick="loginAs('viewer', 'view123')" class="w-full p-3 bg-slate-50 hover:bg-slate-100 rounded-xl border border-slate-200 flex items-center justify-between text-left transition">
+          <div>
+            <p class="font-bold text-slate-900">Viewer</p>
+            <p class="text-[10px] text-slate-500">Read-only dashboards and reports</p>
+          </div>
+          <span class="text-cyan-700 font-bold">&rarr;</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none"></div>
+
+  <!-- Load Main Application Script -->
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

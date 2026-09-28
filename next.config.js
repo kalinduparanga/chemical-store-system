@@ -5,6 +5,9 @@
  */
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  async rewrites() {
+    return [{ source: '/', destination: '/index.html' }];
+  },
   // Enable React Strict Mode for development
   reactStrictMode: true,
   // Allow image domains if needed later
