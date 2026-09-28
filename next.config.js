@@ -11,10 +11,7 @@ const nextConfig = {
   images: {
     domains: [],
   },
-  // Experimental app directory support (enabled by default in Next 13+)
-  experimental: {
-    appDir: true,
-  },
+
 };
 
 module.exports = nextConfig;
